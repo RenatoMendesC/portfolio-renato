@@ -1,8 +1,317 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Renato M. Costa | Portfólio</title><link rel="stylesheet" href="style.css"></head><body><header><b>RM<span>.</span></b><nav><a href="#sobre">Sobre</a><a href="#skills">Tecnologias</a><a href="#projetos">Projetos</a><a href="#trajetoria">Trajetória</a><a href="#contato">Contato</a></nav></header><main><section class="hero"><div><small>OLÁ, EU SOU</small><h1>Renato M.<br><span>Costa</span></h1><h2>Desenvolvedor Web & Analista de Suporte</h2><p>Formado em Análise e Desenvolvimento de Sistemas, desenvolvo aplicações web e busco soluções práticas para problemas de tecnologia.</p><div class="buttons"><a class="primary" href="#projetos">Ver meus projetos</a><a href="https://github.com/RenatoMendesC" target="_blank">GitHub</a></div></div><div class="code"><i></i><pre>const developer = {
-  nome: "Renato Costa",
-  foco: [
-    "Desenvolvimento Web",
-    "Suporte Técnico"
-  ],
-  status: "Disponível para oportunidades"
-};</pre></div></section><section id="sobre"><small>01. SOBRE</small><h3>Construindo minha carreira em tecnologia.</h3><p>Sou formado em Análise e Desenvolvimento de Sistemas pela Universidade Cruzeiro do Sul. Tenho experiência com organização e análise de informações, atendimento, resolução de problemas e rotinas operacionais. Também desenvolvo projetos próprios para aplicar meus conhecimentos em desenvolvimento web, APIs, banco de dados e suporte.</p></section><section id="skills"><small>02. TECNOLOGIAS</small><h3>Ferramentas que utilizo</h3><div class="tags"><b>HTML5</b><b>CSS3</b><b>JavaScript</b><b>Node.js</b><b>Express</b><b>APIs REST</b><b>Banco de Dados</b><b>Git</b><b>GitHub</b><b>Docker</b><b>Windows</b><b>Suporte Técnico</b></div></section><section id="projetos"><small>03. PROJETOS</small><h3>Projeto em destaque</h3><article><em>FULL STACK</em><h4>Central de Chamados V4</h4><p>Sistema web de Help Desk para gerenciamento de chamados, com autenticação, níveis de acesso, prioridades, status, atribuição de técnicos, dashboard, filtros, relatórios e gerenciamento de usuários.</p><div class="tags"><b>Node.js</b><b>Express</b><b>JavaScript</b><b>Banco de Dados</b></div><div class="buttons"><a class="primary" href="https://central-chamados-v4-1.onrender.com/" target="_blank">Ver projeto</a><a href="https://github.com/RenatoMendesC/central-chamados-v4" target="_blank">Código no GitHub</a></div></article></section><section id="trajetoria"><small>04. EXPERIÊNCIA & FORMAÇÃO</small><h3>Minha trajetória</h3><div class="timeline"><div><em>2024 — 2026</em><h4>Balanceiro · Fertisanta</h4><p>Conferência de documentos e dados, controles operacionais, relatórios e comunicação com equipes.</p></div><div><em>2023 — 2024</em><h4>Produção Eletrônica · Onix Tecnologia do Brasil</h4><p>Montagem de placas, cabos e equipamentos eletrônicos, testes e identificação de falhas.</p></div><div><em>FORMAÇÃO</em><h4>Análise e Desenvolvimento de Sistemas</h4><p>Universidade Cruzeiro do Sul · Concluído em 2026.</p></div></div></section><section id="contato" class="contact"><small>05. CONTATO</small><h3>Vamos conversar?</h3><p>Estou em busca de oportunidades em desenvolvimento, suporte técnico e áreas relacionadas à Tecnologia da Informação.</p><div class="buttons"><a class="primary" href="mailto:renatomendescosta4@gmail.com">Enviar e-mail</a><a href="https://www.linkedin.com/in/renatomendescosta" target="_blank">LinkedIn</a><a href="https://github.com/RenatoMendesC" target="_blank">GitHub</a></div></section></main><footer>Desenvolvido por Renato M. Costa · 2026</footer><script src="script.js"></script></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#07111a" />
+  <meta name="description" content="Portfólio de Renato M. Costa — Desenvolvedor Web e Analista de Suporte." />
+  <meta property="og:title" content="Renato M. Costa | Desenvolvedor Web & Analista de Suporte" />
+  <meta property="og:description" content="Projetos, tecnologias e experiência prática em desenvolvimento web, suporte e operações." />
+  <meta property="og:type" content="website" />
+  <title>Renato M. Costa | Portfólio</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="cursor-glow" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Início">
+      <span class="brand-mark">RM</span><span class="brand-dot">.</span>
+    </a>
+
+    <nav class="nav" aria-label="Navegação principal">
+      <a href="#sobre">Sobre</a>
+      <a href="#stack">Stack</a>
+      <a href="#projetos">Projetos</a>
+      <a href="#trajetoria">Trajetória</a>
+      <a href="#contato">Contato</a>
+    </nav>
+
+    <div class="top-actions">
+      <a class="mini-link" href="https://github.com/RenatoMendesC" target="_blank" rel="noreferrer">GitHub ↗</a>
+      <button id="menuBtn" class="menu-btn" aria-label="Abrir menu">☰</button>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero section-shell">
+      <div class="hero-copy reveal">
+        <div class="availability"><span></span> Disponível para oportunidades em TI</div>
+        <p class="kicker">DESENVOLVIMENTO • SUPORTE • PRODUTO</p>
+        <h1>
+          Eu construo experiências digitais
+          <span class="grad-text">claras, rápidas e úteis.</span>
+        </h1>
+        <p class="hero-sub">
+          Sou <strong>Renato M. Costa</strong>, formado em Análise e Desenvolvimento de Sistemas.
+          Desenvolvo aplicações web, estruturo fluxos de suporte e transformo problemas reais em soluções digitais.
+        </p>
+
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#projetos">Explorar projetos</a>
+          <a class="btn btn-ghost" href="mailto:renatomendescosta4@gmail.com">Falar comigo</a>
+        </div>
+
+        <div class="hero-meta">
+          <div><strong>Imbituba / SC</strong><span>Brasil</span></div>
+          <div><strong>ADS</strong><span>Concluído em 2026</span></div>
+          <div><strong>Full Stack</strong><span>Node.js • APIs • Dados</span></div>
+        </div>
+      </div>
+
+      <div class="hero-stage reveal">
+        <div class="orbit orbit-1"></div>
+        <div class="orbit orbit-2"></div>
+
+        <div class="terminal glass">
+          <div class="terminal-head">
+            <div class="dots"><i></i><i></i><i></i></div>
+            <span>renato@portfolio:~</span>
+          </div>
+          <div class="terminal-body">
+            <div><span class="prompt">$</span> whoami</div>
+            <div class="out">Renato M. Costa</div>
+            <div><span class="prompt">$</span> cat foco.txt</div>
+            <div class="out">Desenvolvimento Web + Suporte Técnico</div>
+            <div><span class="prompt">$</span> npm run carreira</div>
+            <div class="out success">✔ build concluído com sucesso</div>
+            <div class="terminal-line">
+              <span class="prompt">$</span><span class="typing" id="typing"></span><span class="caret">▋</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="floating-card card-a glass">
+          <span>STATUS</span>
+          <strong>ONLINE</strong>
+          <small>Pronto para o próximo desafio</small>
+        </div>
+
+        <div class="floating-card card-b glass">
+          <span>STACK</span>
+          <strong>Node.js</strong>
+          <small>Express • REST • Git</small>
+        </div>
+      </div>
+    </section>
+
+    <section id="sobre" class="section-shell section">
+      <div class="section-label reveal">01 / SOBRE</div>
+      <div class="split">
+        <div class="reveal">
+          <h2>Perfil técnico com visão prática de operação.</h2>
+        </div>
+        <div class="reveal">
+          <p class="lead">
+            Minha trajetória mistura tecnologia, operação e resolução de problemas. Isso me ajuda a pensar além do código:
+            entendo fluxo, usuário, processo, urgência e impacto.
+          </p>
+          <p class="muted">
+            Tenho experiência profissional com conferência de dados, relatórios, organização operacional e comunicação entre equipes.
+            Na área de tecnologia, venho construindo projetos próprios com autenticação, APIs, dashboards, banco de dados,
+            controle de acesso, filtros e fluxos completos de atendimento.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="stack" class="section-shell section">
+      <div class="section-label reveal">02 / STACK</div>
+      <div class="section-heading reveal">
+        <h2>Tecnologias que uso para tirar ideias do papel.</h2>
+        <p>Ferramentas com as quais já desenvolvi, testei ou trabalhei em projetos práticos.</p>
+      </div>
+
+      <div class="stack-grid">
+        <article class="stack-card reveal">
+          <span class="stack-index">01</span>
+          <h3>Frontend</h3>
+          <p>Interfaces responsivas e experiência de uso clara.</p>
+          <div class="chips"><span>HTML5</span><span>CSS3</span><span>JavaScript</span><span>Responsividade</span></div>
+        </article>
+        <article class="stack-card reveal">
+          <span class="stack-index">02</span>
+          <h3>Backend</h3>
+          <p>APIs, regras de negócio e integração entre dados e interface.</p>
+          <div class="chips"><span>Node.js</span><span>Express</span><span>REST API</span><span>Autenticação</span></div>
+        </article>
+        <article class="stack-card reveal">
+          <span class="stack-index">03</span>
+          <h3>Dados & DevOps</h3>
+          <p>Persistência, versionamento e publicação de aplicações.</p>
+          <div class="chips"><span>SQL</span><span>MongoDB</span><span>Git</span><span>GitHub</span><span>Docker</span></div>
+        </article>
+        <article class="stack-card reveal">
+          <span class="stack-index">04</span>
+          <h3>Suporte</h3>
+          <p>Diagnóstico, documentação, testes e comunicação com usuários.</p>
+          <div class="chips"><span>Windows</span><span>TCP/IP</span><span>Testes</span><span>Logs</span><span>KB</span></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="projetos" class="section-shell section">
+      <div class="section-label reveal">03 / PROJETOS</div>
+
+      <div class="project-hero reveal">
+        <div class="project-copy">
+          <div class="project-topline">
+            <span class="featured-pill">PROJETO EM DESTAQUE</span>
+            <span class="project-year">2026</span>
+          </div>
+
+          <h2>Central de Chamados V4</h2>
+          <p class="project-desc">
+            Sistema de Help Desk criado para organizar o ciclo completo de atendimento:
+            abertura, triagem, prioridade, atribuição, acompanhamento e fechamento de chamados.
+          </p>
+
+          <div class="project-points">
+            <div><span>01</span><p>Autenticação e níveis de acesso</p></div>
+            <div><span>02</span><p>Dashboard com indicadores operacionais</p></div>
+            <div><span>03</span><p>Filtros, busca, prioridades e status</p></div>
+            <div><span>04</span><p>Gestão de técnicos, usuários e relatórios</p></div>
+          </div>
+
+          <div class="chips project-chips">
+            <span>Node.js</span><span>Express</span><span>JavaScript</span><span>Banco de Dados</span><span>GitHub</span>
+          </div>
+
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="https://central-chamados-v4-1.onrender.com/" target="_blank" rel="noreferrer">Abrir sistema ↗</a>
+            <a class="btn btn-ghost" href="https://github.com/RenatoMendesC/central-chamados-v4" target="_blank" rel="noreferrer">Ver código ↗</a>
+          </div>
+        </div>
+
+        <div class="product-mockup">
+          <div class="browser">
+            <div class="browser-bar">
+              <div class="dots"><i></i><i></i><i></i></div>
+              <div class="address">central-chamados-v4 / dashboard</div>
+            </div>
+            <div class="app-shell">
+              <aside class="app-sidebar">
+                <div class="app-logo">HC</div>
+                <div class="side-line active"></div>
+                <div class="side-line"></div>
+                <div class="side-line"></div>
+                <div class="side-line short"></div>
+              </aside>
+              <div class="app-main">
+                <div class="dash-top">
+                  <div>
+                    <small>VISÃO GERAL</small>
+                    <h4>Dashboard</h4>
+                  </div>
+                  <div class="user-chip">RM</div>
+                </div>
+                <div class="metric-row">
+                  <div class="metric"><span>Total</span><strong>48</strong><small>Chamados</small></div>
+                  <div class="metric"><span>Abertos</span><strong>12</strong><small>Em análise</small></div>
+                  <div class="metric"><span>Em andamento</span><strong>21</strong><small>Ativos</small></div>
+                  <div class="metric"><span>Finalizados</span><strong>15</strong><small>Resolvidos</small></div>
+                </div>
+                <div class="dash-grid">
+                  <div class="chart-card">
+                    <span>Chamados por status</span>
+                    <div class="bars"><i style="height:46%"></i><i style="height:74%"></i><i style="height:58%"></i><i style="height:86%"></i><i style="height:68%"></i><i style="height:92%"></i></div>
+                  </div>
+                  <div class="list-card">
+                    <span>Últimos chamados</span>
+                    <p><b>#1048</b> Acesso indisponível <em>Urgente</em></p>
+                    <p><b>#1047</b> Erro ao salvar ticket <em>Alta</em></p>
+                    <p><b>#1046</b> Ajuste de permissão <em>Média</em></p>
+                    <p><b>#1045</b> Lentidão no sistema <em>Alta</em></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="project-glow"></div>
+        </div>
+      </div>
+
+      <div class="mini-projects">
+        <article class="mini-project reveal">
+          <span>EXPERIMENTO</span>
+          <h3>TruckFlow Pro</h3>
+          <p>Conceito de dashboard logístico para controle de veículos, timeline operacional, alertas e acompanhamento de movimentações.</p>
+          <div class="chips"><span>Node.js</span><span>MongoDB</span><span>Docker</span></div>
+        </article>
+        <article class="mini-project reveal">
+          <span>WEB APP</span>
+          <h3>Controle de Ponto</h3>
+          <p>Interface web simples para registro e visualização de horários, criada para praticar lógica, UI e manipulação do DOM.</p>
+          <div class="chips"><span>HTML</span><span>CSS</span><span>JavaScript</span></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="trajetoria" class="section-shell section">
+      <div class="section-label reveal">04 / TRAJETÓRIA</div>
+      <div class="timeline-grid">
+        <div class="timeline-intro reveal">
+          <h2>Experiência que trouxe disciplina, processo e visão de usuário.</h2>
+          <p>Minha base profissional vem de ambientes onde informação correta, agilidade e comunicação fazem diferença.</p>
+        </div>
+
+        <div class="timeline reveal">
+          <article>
+            <span class="time">2024 — 2026</span>
+            <div>
+              <h3>Balanceiro · Fertisanta</h3>
+              <p>Conferência de documentos e dados, emissão de tickets, controle operacional, relatórios, organização de pátio e comunicação com equipes.</p>
+            </div>
+          </article>
+          <article>
+            <span class="time">2023 — 2024</span>
+            <div>
+              <h3>Produção Eletrônica · Onix Tecnologia do Brasil</h3>
+              <p>Montagem de placas, cabos e equipamentos eletrônicos, testes e identificação de falhas.</p>
+            </div>
+          </article>
+          <article>
+            <span class="time">FORMAÇÃO</span>
+            <div>
+              <h3>Análise e Desenvolvimento de Sistemas</h3>
+              <p>Universidade Cruzeiro do Sul · Concluído em 2026.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-shell section philosophy">
+      <div class="quote reveal">
+        <span>“</span>
+        <p>Não quero apenas escrever código. Quero entender o problema, construir a solução e deixar a experiência melhor para quem usa.</p>
+      </div>
+    </section>
+
+    <section id="contato" class="section-shell section contact">
+      <div class="contact-card reveal">
+        <p class="kicker">VAMOS CONSTRUIR ALGO?</p>
+        <h2>Aberto a oportunidades em desenvolvimento, suporte e tecnologia.</h2>
+        <p>
+          Se você procura alguém com vontade de crescer, experiência prática e foco em resolver problemas,
+          estou disponível para conversar.
+        </p>
+        <div class="contact-links">
+          <a href="mailto:renatomendescosta4@gmail.com">E-mail <span>↗</span></a>
+          <a href="https://www.linkedin.com/in/renatomendescosta" target="_blank" rel="noreferrer">LinkedIn <span>↗</span></a>
+          <a href="https://github.com/RenatoMendesC" target="_blank" rel="noreferrer">GitHub <span>↗</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="section-shell">
+    <span>© 2026 Renato M. Costa</span>
+    <span>Feito com HTML, CSS & JavaScript.</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
