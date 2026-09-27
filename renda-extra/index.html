@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Renda Extra — guia prático para mães solteiras que querem explorar possibilidades de renda sem sair de casa." />
+  <title>Renda Extra | Guia para Mães Solteiras</title>
+  <style>
+    :root{
+      --bg:#fff9f5; --surface:#ffffff; --ink:#241b1a; --muted:#6f615d;
+      --accent:#d94f3d; --accent-dark:#b43d2e; --soft:#f8e3dc; --line:#ead8d2;
+      --green:#2f7b56; --shadow:0 22px 70px rgba(80,41,31,.12);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+    a{text-decoration:none;color:inherit}
+    .wrap{width:min(1120px,calc(100% - 32px));margin:auto}
+    .topbar{background:#2d1f1c;color:#fff;text-align:center;padding:10px 16px;font-size:14px;font-weight:700}
+    .topbar a{color:#ffd7cc;text-decoration:underline;text-underline-offset:3px}
+    header{position:sticky;top:0;z-index:10;background:rgba(255,249,245,.92);backdrop-filter:blur(14px);border-bottom:1px solid rgba(234,216,210,.75)}
+    nav{height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:-.02em}
+    .mark{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,var(--accent),#ef8a6d);display:grid;place-items:center;color:#fff;font-family:Georgia,serif;font-size:22px;box-shadow:0 10px 22px rgba(217,79,61,.24)}
+    .brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:.13em;font-weight:800}
+    .nav-cta,.cta{display:inline-flex;align-items:center;justify-content:center;border-radius:16px;background:linear-gradient(135deg,var(--accent),#ec7259);color:#fff;font-weight:900;box-shadow:0 14px 30px rgba(217,79,61,.25);transition:.2s transform,.2s box-shadow}
+    .nav-cta{padding:11px 16px;font-size:14px}
+    .cta{padding:16px 22px;font-size:17px;min-height:56px}
+    .cta:hover,.nav-cta:hover{transform:translateY(-2px);box-shadow:0 18px 34px rgba(217,79,61,.32)}
+    .hero{padding:72px 0 50px}
+    .hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:58px;align-items:center}
+    .eyebrow{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border:1px solid var(--line);background:#fff;border-radius:999px;font-size:12px;font-weight:900;letter-spacing:.08em;color:var(--accent-dark)}
+    h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(44px,6vw,78px);line-height:.98;letter-spacing:-.045em;margin:18px 0 22px}
+    h1 span{color:var(--accent)}
+    .lead{font-size:20px;color:var(--muted);max-width:680px}
+    .hero-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:28px}
+    .price{font-weight:900}.price strong{font-size:28px;color:var(--accent-dark)} .price small{display:block;color:var(--muted);font-weight:700}
+    .trust{display:flex;gap:14px;flex-wrap:wrap;margin-top:24px;color:var(--muted);font-size:14px;font-weight:750}
+    .trust span{display:flex;gap:7px;align-items:center}
+    .book-stage{position:relative;min-height:500px;display:grid;place-items:center}
+    .blob{position:absolute;inset:40px 5% 20px;border-radius:46% 54% 64% 36%/44% 38% 62% 56%;background:linear-gradient(145deg,#f7d2c7,#fbe9e3);filter:drop-shadow(0 25px 40px rgba(106,61,45,.12))}
+    .book{position:relative;width:min(330px,78vw);aspect-ratio:.72;background:linear-gradient(150deg,#4c2923,#2f1b18);border-radius:10px 22px 22px 10px;box-shadow:28px 34px 55px rgba(55,28,22,.28);padding:36px 30px;color:#fff;transform:rotate(3deg)}
+    .book:before{content:"";position:absolute;left:11px;top:0;bottom:0;width:2px;background:rgba(255,255,255,.18)}
+    .book .mini{font-size:11px;letter-spacing:.16em;color:#ffc5b7;font-weight:900}
+    .book h2{font-family:Georgia,serif;font-size:42px;line-height:1.02;margin:22px 0 18px}
+    .book p{color:#f2dcd6;font-size:15px}
+    .book .seal{position:absolute;right:22px;bottom:24px;width:74px;height:74px;border-radius:50%;background:var(--accent);display:grid;place-items:center;text-align:center;font-size:11px;font-weight:900;line-height:1.1}
+    section{padding:70px 0}
+    .section-head{max-width:720px;margin-bottom:34px}
+    .kicker{color:var(--accent-dark);font-size:12px;letter-spacing:.14em;font-weight:950;text-transform:uppercase}
+    h2.section-title{font-family:Georgia,serif;font-size:clamp(34px,4.5vw,54px);line-height:1.05;margin:8px 0 12px;letter-spacing:-.035em}
+    .section-head p{color:var(--muted);font-size:18px}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .stat{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:28px;box-shadow:0 8px 26px rgba(78,47,36,.05)}
+    .stat strong{display:block;font-family:Georgia,serif;font-size:42px;color:var(--accent)}
+    .stat span{color:var(--muted);font-weight:700}
+    .soft{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+    .story{font-size:19px;color:var(--muted)}
+    .quote{padding:26px;border-left:4px solid var(--accent);background:var(--soft);border-radius:0 18px 18px 0;color:#47302b;font-weight:800}
+    .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:26px;position:relative;overflow:hidden}
+    .num{width:42px;height:42px;border-radius:12px;background:var(--soft);color:var(--accent-dark);display:grid;place-items:center;font-weight:950}
+    .card h3{font-size:21px;margin:16px 0 8px}
+    .card p{margin:0;color:var(--muted)}
+    .paths{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+    .pill{padding:10px 14px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:800;color:#5e4943}
+    .checks{display:grid;gap:14px;margin-top:24px}
+    .check{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}
+    .check b{width:26px;height:26px;border-radius:50%;background:#dff1e7;color:var(--green);display:grid;place-items:center;flex:0 0 auto}
+    .offer{background:linear-gradient(145deg,#30201c,#4b2d27);color:#fff;border-radius:34px;padding:46px;box-shadow:var(--shadow)}
+    .offer-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center}
+    .offer p{color:#ead8d2}
+    .offer-price{font-size:56px;font-family:Georgia,serif;line-height:1;color:#ffd7cc;margin:10px 0}
+    .countdown{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:24px 0}
+    .timebox{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:15px 8px;text-align:center}
+    .timebox strong{display:block;font-size:28px}
+    .timebox span{font-size:10px;letter-spacing:.09em;color:#dbc6c0;font-weight:900}
+    .offer .cta{width:100%;background:linear-gradient(135deg,#ff755f,#f29a77);box-shadow:none}
+    .offer ul{padding-left:18px;color:#f0dfda}
+    .faq{display:grid;gap:12px}
+    details{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 20px}
+    summary{cursor:pointer;font-weight:900}
+    details p{color:var(--muted);margin-bottom:0}
+    footer{padding:40px 0 55px;color:var(--muted);font-size:13px}
+    .footer-grid{display:flex;justify-content:space-between;gap:24px;align-items:flex-end;border-top:1px solid var(--line);padding-top:24px}
+    .tiny{max-width:650px}
+    @media (max-width:860px){
+      .hero{padding-top:42px}.hero-grid,.split,.offer-grid{grid-template-columns:1fr}.book-stage{min-height:420px}.stats{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.offer{padding:28px}.nav-cta{display:none}
+    }
+    @media (max-width:520px){
+      .wrap{width:min(100% - 22px,1120px)} nav{height:64px}.hero{padding-top:30px}h1{font-size:44px}.lead{font-size:17px}.cta{width:100%}.price{width:100%}.book-stage{min-height:360px}.book{width:255px;padding:28px 24px}.book h2{font-size:34px}.countdown{gap:6px}.timebox strong{font-size:22px}.footer-grid{display:block}
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">Uma nova possibilidade começa com um pequeno passo. <a href="#oferta">Conheça a promoção de lançamento ↗</a></div>
+
+  <header>
+    <div class="wrap">
+      <nav>
+        <a class="brand" href="#inicio" aria-label="Renda Extra">
+          <span class="mark">re.</span>
+          <span>Renda Extra<small>IDEIAS QUE CABEM NA SUA VIDA</small></span>
+        </a>
+        <a class="nav-cta" href="https://pay.kiwify.com.br/hYB9TfN">Conhecer o e-book</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="wrap hero-grid">
+        <div>
+          <div class="eyebrow">PARA MÃES SOLTEIRAS • E-BOOK EM PDF</div>
+          <h1>Você cuida de tanto. <span>Seu próximo passo também importa.</span></h1>
+          <p class="lead">Um guia para mães solteiras que querem buscar renda extra sem sair de casa — com ideias práticas, organização e espaço para a vida real.</p>
+          <div class="hero-actions">
+            <a class="cta" href="https://pay.kiwify.com.br/hYB9TfN">Quero começar agora</a>
+            <div class="price"><strong>R$ 19,90</strong><small>pagamento único</small></div>
+          </div>
+          <div class="trust">
+            <span>✦ 8 caminhos possíveis</span><span>✦ Plano de 30 dias</span><span>✦ PDF para ler no celular</span>
+          </div>
+        </div>
+        <div class="book-stage" aria-label="Capa ilustrativa do e-book">
+          <div class="blob"></div>
+          <div class="book">
+            <div class="mini">RENDA EXTRA • GUIA PRÁTICO</div>
+            <h2>Renda Extra para Mães Solteiras</h2>
+            <p>Ideias e próximos passos para começar sem sair de casa.</p>
+            <div class="seal">PLANO<br>DE 30<br>DIAS</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <div class="kicker">Um guia para começar</div>
+          <h2 class="section-title">Seu tempo. Suas possibilidades.</h2>
+        </div>
+        <div class="stats">
+          <div class="stat"><strong>08</strong><span>ideias de trabalho para explorar</span></div>
+          <div class="stat"><strong>18</strong><span>páginas de orientação prática</span></div>
+          <div class="stat"><strong>30</strong><span>dias em um plano de ação adaptável</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="soft">
+      <div class="wrap split">
+        <div>
+          <div class="kicker">A sua rotina é o ponto de partida</div>
+          <h2 class="section-title">Você não precisa dar conta de tudo para começar.</h2>
+        </div>
+        <div class="story">
+          <p>Entre a casa, os filhos e as contas, pensar em uma nova fonte de renda pode parecer mais uma tarefa enorme. Este guia ajuda a transformar essa vontade em um teste pequeno: escolher uma habilidade, definir uma entrega e conversar com possíveis clientes.</p>
+          <div class="quote">Comece com o que você tem. Escolha o que cabe na sua vida.</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <div class="kicker">Por dentro do e-book</div>
+          <h2 class="section-title">Da primeira ideia ao primeiro teste.</h2>
+          <p>Orientação direta para organizar o começo, sem pular etapas.</p>
+        </div>
+        <div class="cards">
+          <article class="card"><div class="num">01</div><h3>Encontre o seu caminho</h3><p>Compare 8 atividades, dos serviços digitais ao trabalho manual, considerando recursos, habilidades e disponibilidade.</p></article>
+          <article class="card"><div class="num">02</div><h3>Monte uma oferta clara</h3><p>Defina o que entregar, a quantidade, o prazo e os ajustes. Aprenda a incluir seu tempo no cálculo do preço.</p></article>
+          <article class="card"><div class="num">03</div><h3>Converse com clientes</h3><p>Use mensagens para primeiro contato, orçamento e acompanhamento. Prepare amostras do seu trabalho.</p></article>
+          <article class="card"><div class="num">04</div><h3>Coloque em prática</h3><p>Siga um plano de 30 dias, organize pedidos e acompanhe custos. Ajuste o plano conforme sua realidade.</p></article>
+        </div>
+        <div class="paths">
+          <span class="pill">Assistência virtual</span><span class="pill">Cadastro de produtos</span><span class="pill">Artes digitais</span><span class="pill">Edição de vídeos</span><span class="pill">Revisão de textos</span><span class="pill">Aulas on-line</span><span class="pill">Costura</span><span class="pill">Artesanato</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="soft">
+      <div class="wrap split">
+        <div>
+          <div class="kicker">Um começo com os pés no chão</div>
+          <h2 class="section-title">Feito para quem quer começar com clareza.</h2>
+          <p class="story">Um material introdutório para transformar possibilidades em próximos passos concretos.</p>
+        </div>
+        <div class="checks">
+          <div class="check"><b>✓</b><span>Encontrar uma atividade compatível com a rotina com filhos.</span></div>
+          <div class="check"><b>✓</b><span>Testar uma ideia usando os recursos que já possui.</span></div>
+          <div class="check"><b>✓</b><span>Entender como apresentar um serviço e calcular um preço.</span></div>
+          <div class="check"><b>✓</b><span>Organizar o trabalho com limites, prazos e margem para imprevistos.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="oferta">
+      <div class="wrap">
+        <div class="offer">
+          <div class="offer-grid">
+            <div>
+              <div class="kicker" style="color:#ffb9aa">Promoção de lançamento</div>
+              <h2 class="section-title">Seu próximo passo pode ser pequeno.</h2>
+              <div class="offer-price">R$ 19,90</div>
+              <p>Pagamento único • e-book completo em PDF</p>
+              <ul>
+                <li>Guia prático com 18 páginas</li>
+                <li>8 ideias de trabalho em casa</li>
+                <li>Mensagens para adaptar e usar</li>
+                <li>Plano de ação de 30 dias e exercícios</li>
+              </ul>
+            </div>
+            <div>
+              <p style="margin-top:0;font-weight:900;color:#fff">Esta promoção termina em:</p>
+              <div class="countdown" id="countdown">
+                <div class="timebox"><strong id="days">00</strong><span>DIAS</span></div>
+                <div class="timebox"><strong id="hours">00</strong><span>HORAS</span></div>
+                <div class="timebox"><strong id="minutes">00</strong><span>MINUTOS</span></div>
+                <div class="timebox"><strong id="seconds">00</strong><span>SEGUNDOS</span></div>
+              </div>
+              <p style="font-size:13px">Até 28/09/2026, às 23h30 (Brasília).</p>
+              <a class="cta" href="https://pay.kiwify.com.br/hYB9TfN">Quero aproveitar por R$ 19,90</a>
+              <p style="font-size:12px;text-align:center">Você será direcionada ao checkout da Kiwify para concluir a compra.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <div class="kicker">Antes de começar</div>
+          <h2 class="section-title">Dúvidas frequentes.</h2>
+        </div>
+        <div class="faq">
+          <details><summary>O que estou comprando?</summary><p>Um e-book educativo em PDF com ideias, exercícios e um plano de ação para organizar os primeiros passos na busca por uma renda extra em casa.</p></details>
+          <details><summary>Preciso ter experiência?</summary><p>Não. O material é introdutório e foi organizado para ajudar quem está começando a avaliar possibilidades e montar uma oferta simples.</p></details>
+          <details><summary>Consigo trabalhar usando só o celular?</summary><p>Algumas das ideias podem ser iniciadas pelo celular. Outras ficam mais fáceis com computador ou ferramentas específicas. O guia ajuda a comparar essas necessidades.</p></details>
+          <details><summary>O plano garante renda em 30 dias?</summary><p>Não. O plano serve para organizar ações e testes. Resultados variam conforme disponibilidade, demanda, experiência, execução e outros fatores.</p></details>
+          <details><summary>Como faço a compra e recebo o material?</summary><p>Ao clicar no botão de compra, você será direcionada ao checkout da Kiwify para concluir o pagamento e seguir as instruções de entrega do produto digital.</p></details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-grid">
+      <div class="brand">
+        <span class="mark">re.</span>
+        <span>Renda Extra<small>IDEIAS QUE CABEM NA SUA VIDA</small></span>
+      </div>
+      <div class="tiny">Material educativo. Sem promessa de ganhos. Os exemplos de valores são didáticos e não representam previsão de renda.</div>
+    </div>
+  </footer>
+
+  <script>
+    (function(){
+      const end = new Date("2026-09-28T23:30:00-03:00").getTime();
+      const $ = id => document.getElementById(id);
+      function tick(){
+        const diff = Math.max(0, end - Date.now());
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        $("days").textContent = String(d).padStart(2,"0");
+        $("hours").textContent = String(h).padStart(2,"0");
+        $("minutes").textContent = String(m).padStart(2,"0");
+        $("seconds").textContent = String(s).padStart(2,"0");
+      }
+      tick(); setInterval(tick,1000);
+    })();
+  </script>
+</body>
+</html>
