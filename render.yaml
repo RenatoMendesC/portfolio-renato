@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: renda-extra
+    runtime: static
+    repo: https://github.com/RenatoMendesC/portfolio-renato.git
+    branch: renda-extra-static
+    buildCommand: echo "Static site ready"
+    staticPublishPath: ./renda-extra
+    autoDeployTrigger: commit
