@@ -173,20 +173,10 @@ async function apifyJson(url,options={}){
   return data;
 }
 
-async function runApifyYoutube(url,quality){
-  const actor='datapipe~youtube-video-downloader';
+async function runApifyActor(actor,input,timeoutMs=420000){
   const token=encodeURIComponent(APIFY_TOKEN);
-  const input={
-    videoUrls:[url],
-    quality,
-    format:'mp4',
-    maxConcurrency:1,
-    includeSubtitles:false,
-    includeThumbnail:false,
-    includeStats:false
-  };
+  console.log('[NORYA_IMPORT] Starting actor',actor);
 
-  console.log('[NORYA_IMPORT] Starting Apify import at',quality);
   const started=await apifyJson(
     'https://api.apify.com/v2/acts/'+actor+'/runs?token='+token+'&memory=1024',
     {
@@ -200,61 +190,106 @@ async function runApifyYoutube(url,quality){
   const runId=run?.id;
   if(!runId) throw new Error('Apify não retornou o ID da execução.');
 
-  const deadline=Date.now()+1000*60*7;
+  const deadline=Date.now()+timeoutMs;
   let finalRun=run;
+
   while(Date.now()<deadline){
     const status=String(finalRun?.status||'').toUpperCase();
     if(['SUCCEEDED','FAILED','ABORTED','TIMED-OUT'].includes(status)) break;
     await new Promise(r=>setTimeout(r,2500));
     const state=await apifyJson('https://api.apify.com/v2/actor-runs/'+encodeURIComponent(runId)+'?token='+token);
     finalRun=state?.data||state;
-    console.log('[NORYA_IMPORT] Apify status:',finalRun?.status||'UNKNOWN');
+    console.log('[NORYA_IMPORT]',actor,'status:',finalRun?.status||'UNKNOWN');
   }
 
   const status=String(finalRun?.status||'').toUpperCase();
-  if(status!=='SUCCEEDED') throw new Error('Apify terminou com status '+(status||'DESCONHECIDO')+'.');
+  if(status!=='SUCCEEDED') throw new Error(actor+' terminou com status '+(status||'DESCONHECIDO')+'.');
 
   const datasetId=finalRun?.defaultDatasetId||run?.defaultDatasetId;
-  if(!datasetId) throw new Error('Apify não retornou o dataset da execução.');
+  if(!datasetId) throw new Error(actor+' não retornou dataset.');
 
   const items=await apifyJson(
     'https://api.apify.com/v2/datasets/'+encodeURIComponent(datasetId)+'/items?token='+token+'&clean=true'
   );
-  const item=Array.isArray(items)?items[0]:null;
-  if(!item) throw new Error('Apify não retornou resultado para o vídeo.');
-  if(String(item.status||'').toLowerCase()!=='success'||!item.downloadUrl){
-    throw new Error('Apify: '+(item.error||'download indisponível para este vídeo.'));
-  }
-  return item;
+  return Array.isArray(items)?items:[];
+}
+
+function withApifyToken(raw){
+  try{
+    const u=new URL(raw);
+    if(u.hostname==='api.apify.com'&&!u.searchParams.has('token')) u.searchParams.set('token',APIFY_TOKEN);
+    return u.toString();
+  }catch{return raw}
+}
+
+async function importWithLurkApi(url,quality){
+  const items=await runApifyActor('lurkapi~youtube-video-downloader',{
+    videoUrls:[url],
+    quality,
+    format:'mp4',
+    includeSubtitles:false,
+    maxConcurrency:1,
+    proxyConfiguration:{
+      useApifyProxy:true,
+      apifyProxyGroups:['RESIDENTIAL']
+    }
+  });
+
+  const item=items.find(x=>x&&(x.videoFileUrl||String(x.status||'').toLowerCase()==='success'))||items[0];
+  if(!item) throw new Error('LurkAPI não retornou resultado.');
+  if(item.error) throw new Error('LurkAPI: '+item.error);
+  const downloadUrl=item.videoFileUrl||item.downloadUrl;
+  if(!downloadUrl) throw new Error('LurkAPI não retornou URL do vídeo.');
+  return {downloadUrl,fileSize:Number(item.fileSize||0),fileSizeMB:Number(item.fileSizeMB||0),provider:'lurkapi'};
+}
+
+async function importWithBoztek(url,quality){
+  const items=await runApifyActor('boztek-ltd~youtube-downloader',{
+    startUrls:[{url}],
+    downloadType:'video',
+    quality
+  });
+
+  const item=items.find(x=>x&&(x.downloadUrl||String(x.status||'').toUpperCase()==='SUCCESS'))||items[0];
+  if(!item) throw new Error('Boztek não retornou resultado.');
+  if(item.error) throw new Error('Boztek: '+item.error);
+  const downloadUrl=item.downloadUrl;
+  if(!downloadUrl) throw new Error('Boztek não retornou URL do vídeo.');
+  return {downloadUrl,fileSize:Number(item.fileSize||0),fileSizeMB:Number(item.fileSizeMB||0),provider:'boztek'};
 }
 
 async function downloadYoutubeProvider(url,dest){
   if(!APIFY_TOKEN) throw new Error('Provider de importação não configurado.');
 
+  const qualities=['720p','480p','360p'];
   let lastError=null;
-  for(const quality of ['720p','480p','360p']){
-    try{
-      const item=await runApifyYoutube(url,quality);
-      const size=Number(item.fileSize||0);
-      const sizeMb=Number(item.fileSizeMB||0);
 
-      if((size&&size>MAX_BYTES)||(sizeMb&&sizeMb>MAX_BYTES/1024/1024)){
-        console.warn('[NORYA_IMPORT] Source too large at',quality,'-',sizeMb||Math.round(size/1024/1024),'MB');
-        lastError=new Error('Arquivo muito grande em '+quality+'.');
-        continue;
+  for(const quality of qualities){
+    for(const provider of [importWithLurkApi,importWithBoztek]){
+      try{
+        console.log('[NORYA_IMPORT] Trying',provider.name,quality);
+        const item=await provider(url,quality);
+        const size=item.fileSize||0;
+        const sizeMb=item.fileSizeMB||0;
+        if((size&&size>MAX_BYTES)||(sizeMb&&sizeMb>MAX_BYTES/1024/1024)){
+          console.warn('[NORYA_IMPORT] Too large from',item.provider,quality,sizeMb||Math.round(size/1024/1024),'MB');
+          lastError=new Error('Arquivo muito grande em '+quality+'.');
+          continue;
+        }
+
+        console.log('[NORYA_IMPORT] Download URL from',item.provider,quality);
+        await downloadDirect(withApifyToken(item.downloadUrl),dest);
+        console.log('[NORYA_IMPORT] Video imported successfully via',item.provider,quality);
+        return true;
+      }catch(e){
+        lastError=e;
+        console.error('[NORYA_IMPORT]',provider.name,'failed at',quality+':',e.message);
+        await fs.rm(dest,{force:true}).catch(()=>{});
+        await new Promise(r=>setTimeout(r,900));
       }
-
-      console.log('[NORYA_IMPORT] Download URL received at',quality);
-      await downloadDirect(item.downloadUrl,dest);
-      console.log('[NORYA_IMPORT] Video imported successfully at',quality);
-      return true;
-    }catch(e){
-      lastError=e;
-      console.error('[NORYA_IMPORT] Apify attempt failed at',quality+':',e.message);
-      await fs.rm(dest,{force:true}).catch(()=>{});
-      await new Promise(r=>setTimeout(r,1200));
     }
   }
+
   throw lastError||new Error('Importação indisponível.');
 }
 
