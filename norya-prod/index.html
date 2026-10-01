@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#050706">
+  <title>Norya IA — Clipadas com IA</title>
+  <meta name="description" content="Norya IA transforma vídeos longos em clipadas verticais prontas para Shorts, Reels e TikTok.">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="cursor-glow" id="cursorGlow"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+  <canvas id="motionCanvas" aria-hidden="true"></canvas>
+
+  <section class="login-view" id="loginView">
+    <div class="login-hero">
+      <div class="brand brand-large">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M14 49V15h9l18 22V15h9v34h-9L23 27v22z" fill="currentColor"/>
+          <path d="M45 8l11 7-11 7z" fill="#b8ff3d"/>
+        </svg>
+        <span>NORYA <b>IA</b></span>
+      </div>
+      <div class="hero-copy">
+        <span class="eyebrow">INTELLIGENCE FOR CREATORS</span>
+        <h1>Transforme horas de vídeo em <span>momentos que prendem.</span></h1>
+        <p>Um link entra. A Norya encontra os melhores trechos, cria versões verticais e entrega suas clipadas prontas para publicar.</p>
+      </div>
+      <div class="login-stats">
+        <div class="stat-card tilt"><strong>9:16</strong><span>Reels, Shorts e TikTok</span></div>
+        <div class="stat-card tilt"><strong>3–5</strong><span>clipadas por processamento</span></div>
+        <div class="stat-card tilt"><strong>∞</strong><span>na conta OWNER</span></div>
+      </div>
+    </div>
+
+    <div class="login-side">
+      <form class="login-card tilt" id="loginForm">
+        <div class="login-card-top">
+          <span class="status-pill">NORYA IA 1.0</span>
+          <span class="owner-badge">OWNER</span>
+        </div>
+        <h2>Entrar na Norya</h2>
+        <p>Acesse seu painel e comece a gerar clipadas.</p>
+
+        <label class="field">
+          <span>E-mail</span>
+          <input type="email" id="loginEmail" autocomplete="username" placeholder="seu@email.com" required>
+        </label>
+
+        <label class="field">
+          <span>Senha</span>
+          <input type="password" id="loginPassword" autocomplete="current-password" placeholder="Sua senha" required>
+        </label>
+
+        <div class="form-error" id="loginError"></div>
+        <button class="primary magnetic" type="submit" id="loginButton">ENTRAR <span>→</span></button>
+
+        <div class="login-note">
+          <span>MASTER</span>
+          <small>clipadas ilimitadas • prioridade máxima</small>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <div class="app-view" id="appView">
+    <aside class="sidebar">
+      <a class="brand" href="#" data-nav="generator">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M14 49V15h9l18 22V15h9v34h-9L23 27v22z" fill="currentColor"/>
+          <path d="M45 8l11 7-11 7z" fill="#b8ff3d"/>
+        </svg>
+        <span>NORYA <b>IA</b></span>
+      </a>
+
+      <nav class="side-nav">
+        <button class="nav-item active" data-section="generator"><span>✦</span> Gerar clipadas</button>
+        <button class="nav-item" data-section="history"><span>◫</span> Histórico</button>
+        <button class="nav-item" data-section="plans"><span>◇</span> Planos</button>
+        <button class="nav-item" data-section="settings"><span>⚙</span> Configurações</button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="bridge-mini" id="bridgeMini">
+          <i></i>
+          <div>
+            <b>Norya Link Engine</b>
+            <span id="bridgeMiniText">verificando...</span>
+          </div>
+        </div>
+        <div class="profile-mini">
+          <div class="avatar">RC</div>
+          <div>
+            <b id="profileName">Renato</b>
+            <span id="profilePlan">MASTER / OWNER</span>
+          </div>
+        </div>
+        <button class="logout" id="logoutBtn">Sair</button>
+      </div>
+    </aside>
+
+    <main class="main-shell">
+      <header class="topbar">
+        <div>
+          <span class="eyebrow">NORYA WORKSPACE</span>
+          <h2 id="pageTitle">Gerar clipadas</h2>
+        </div>
+        <div class="top-actions">
+          <div class="plan-chip"><span>MASTER</span><b>∞ clipadas</b></div>
+          <div class="live-chip"><i></i> ENGINE ONLINE</div>
+        </div>
+      </header>
+
+      <section class="page active" id="page-generator">
+        <div class="hero-panel tilt">
+          <div class="hero-panel-copy">
+            <span class="eyebrow">NORYA MOMENTUM ENGINE</span>
+            <h3>Um link. Vários cortes fortes.</h3>
+            <p>Cole um link autorizado do YouTube ou um link direto. A Norya analisa o vídeo e seleciona os trechos de maior energia para você.</p>
+          </div>
+          <div class="engine-orb" aria-hidden="true">
+            <div class="orb-core">N</div>
+            <div class="orb-ring r1"></div>
+            <div class="orb-ring r2"></div>
+            <div class="orb-ring r3"></div>
+          </div>
+        </div>
+
+        <div class="generator-grid">
+          <div class="generator-card tilt">
+            <div class="section-head">
+              <div>
+                <span class="eyebrow">NOVA GERAÇÃO</span>
+                <h3>Cole o link do vídeo</h3>
+              </div>
+              <span class="source-pill" id="sourcePill">AUTO</span>
+            </div>
+
+            <div class="link-box">
+              <span class="link-icon">↗</span>
+              <input id="videoUrl" type="url" placeholder="https://youtube.com/watch?v=..." autocomplete="off">
+              <button class="paste-btn" id="pasteBtn" type="button">COLAR</button>
+            </div>
+
+            <label class="rights-confirm">
+              <input type="checkbox" id="rightsConfirm">
+              <span>Confirmo que possuo este conteúdo ou tenho autorização para processá-lo.</span>
+            </label>
+
+            <div class="options-grid">
+              <label class="option">
+                <span>Quantidade</span>
+                <select id="clipCount">
+                  <option value="3">3 clipadas</option>
+                  <option value="4">4 clipadas</option>
+                  <option value="5">5 clipadas</option>
+                </select>
+              </label>
+              <label class="option">
+                <span>Duração</span>
+                <select id="clipDuration">
+                  <option value="30">30 segundos</option>
+                  <option value="40" selected>40 segundos</option>
+                  <option value="60">60 segundos</option>
+                </select>
+              </label>
+              <label class="option">
+                <span>Qualidade</span>
+                <select id="quality">
+                  <option value="720">720p</option>
+                  <option value="1080">1080p</option>
+                </select>
+              </label>
+              <label class="option">
+                <span>Layout</span>
+                <select id="layout">
+                  <option value="crop">Foco central</option>
+                  <option value="blur">Fundo desfocado</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="generator-actions">
+              <button class="primary magnetic" id="generateBtn" type="button">✦ GERAR CLIPADAS</button>
+              <button class="secondary magnetic" id="uploadBtn" type="button">OU ENVIAR VÍDEO</button>
+              <input id="uploadInput" type="file" accept="video/*" hidden>
+            </div>
+
+            <div class="inline-message" id="generatorMessage"></div>
+
+            <div class="bridge-callout" id="bridgeCallout">
+              <div>
+                <span class="eyebrow">YOUTUBE BLOQUEOU O SERVIDOR?</span>
+                <h4>Norya Link Engine</h4>
+                <p>Instale uma vez. Depois, você continua só colando links; a importação acontece automaticamente pela sua própria conexão.</p>
+              </div>
+              <a class="secondary magnetic" href="./bridge/INICIAR-NORYA-LINK.bat" download>INSTALAR LINK ENGINE</a>
+            </div>
+          </div>
+
+          <div class="activity-card tilt">
+            <div class="section-head">
+              <div>
+                <span class="eyebrow">STATUS</span>
+                <h3 id="statusTitle">Pronto para começar</h3>
+              </div>
+              <span class="activity-dot" id="activityDot"></span>
+            </div>
+            <div class="progress-ring-wrap">
+              <div class="progress-ring" id="progressRing"><span id="progressValue">0%</span></div>
+            </div>
+            <p id="statusText">Cole um link ou envie um vídeo.</p>
+            <div class="status-lines">
+              <div><span>Fonte</span><b id="statusSource">—</b></div>
+              <div><span>Motor</span><b>Momentum Engine</b></div>
+              <div><span>Saída</span><b>9:16 MP4</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+          <div class="results-head">
+            <div>
+              <span class="eyebrow">RESULTADO</span>
+              <h3>Suas clipadas</h3>
+            </div>
+            <span id="resultCount">0 arquivos</span>
+          </div>
+          <div class="clips-grid" id="clipsGrid"></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-history">
+        <div class="page-intro">
+          <span class="eyebrow">HISTÓRICO</span>
+          <h3>Últimas gerações</h3>
+          <p>Os registros ficam salvos neste navegador para você reencontrar seus processamentos.</p>
+        </div>
+        <div class="history-list" id="historyList"></div>
+      </section>
+
+      <section class="page" id="page-plans">
+        <div class="page-intro">
+          <span class="eyebrow">PLANOS</span>
+          <h3>Escala para qualquer volume.</h3>
+          <p>Do primeiro corte ao uso profissional diário.</p>
+        </div>
+        <div class="plans-grid">
+          <article class="plan-card tilt">
+            <span>FREE</span><h4>R$ 0</h4><small>para começar</small>
+            <ul><li>1 clipe por dia</li><li>720p</li><li>Marca Norya</li></ul>
+            <button class="secondary">Plano gratuito</button>
+          </article>
+          <article class="plan-card tilt">
+            <span>CREATOR</span><h4>R$ 29,90</h4><small>/ mês</small>
+            <ul><li>60 clipes/mês</li><li>1080p</li><li>Sem marca</li></ul>
+            <button class="secondary">Em breve</button>
+          </article>
+          <article class="plan-card featured tilt">
+            <span>PRO</span><h4>R$ 59,90</h4><small>/ mês</small>
+            <ul><li>200 clipes/mês</li><li>Prioridade</li><li>Brand Kit</li></ul>
+            <button class="primary">Em breve</button>
+          </article>
+          <article class="plan-card master tilt">
+            <span>MASTER</span><h4>R$ 119,97</h4><small>/ mês • fidelidade 12 meses</small>
+            <ul><li>Clipadas ilimitadas</li><li>1080p</li><li>Prioridade máxima</li><li>Sem marca</li></ul>
+            <button class="secondary">Seu plano</button>
+          </article>
+        </div>
+      </section>
+
+      <section class="page" id="page-settings">
+        <div class="page-intro">
+          <span class="eyebrow">CONFIGURAÇÕES</span>
+          <h3>Seu ambiente Norya</h3>
+          <p>Conexões e preferências do motor.</p>
+        </div>
+        <div class="settings-grid">
+          <article class="setting-card tilt">
+            <div class="setting-icon">↗</div>
+            <div>
+              <h4>Norya Link Engine</h4>
+              <p>Permite importar links do YouTube pela sua própria conexão quando o ambiente cloud é bloqueado.</p>
+              <div class="bridge-status" id="bridgeStatus"><i></i><span>Verificando...</span></div>
+              <a class="secondary" href="./bridge/INICIAR-NORYA-LINK.bat" download>Baixar para Windows</a>
+            </div>
+          </article>
+          <article class="setting-card tilt">
+            <div class="setting-icon">⚡</div>
+            <div>
+              <h4>Motor de seleção</h4>
+              <p>O Momentum Engine mede energia sonora, picos e atividade para escolher trechos com maior intensidade.</p>
+              <span class="setting-value">Momentum Engine v1</span>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
