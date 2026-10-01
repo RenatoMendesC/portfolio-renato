@@ -215,6 +215,7 @@ app.post('/api/clip',requireAuth,async(req,res)=>{
 });
 
 app.post('/api/upload',requireAuth,upload.single('video'),async(req,res)=>{
+  const platformUrl=String(req.body?.platformUrl||'').trim();
   if(busy){
     if(req.file?.path) await fs.rm(req.file.path,{force:true}).catch(()=>{});
     return res.status(429).json({error:'A beta está processando outro vídeo. Tente novamente em instantes.'});
@@ -231,7 +232,17 @@ app.post('/api/upload',requireAuth,upload.single('video'),async(req,res)=>{
     const proto=req.get('x-forwarded-proto')||req.protocol;
     const downloadUrl=proto+'://'+req.get('host')+'/clips/'+id+'.mp4';
     setTimeout(()=>fs.rm(output,{force:true}).catch(()=>{}),20*60*1000).unref();
-    res.json({ok:true,downloadUrl,durationSeconds:30,format:'720x1280',score:92,note:'Beta: arquivo processado em 9:16. Nesta etapa, a Norya usa os primeiros 30 segundos para validar o motor de renderização.'});
+    res.json({
+      ok:true,
+      downloadUrl,
+      durationSeconds:30,
+      format:'720x1280',
+      score:92,
+      platformUrl:platformUrl||null,
+      note:platformUrl
+        ? 'Arquivo original vinculado ao vídeo do YouTube e processado em 9:16. Beta: nesta etapa a Norya usa os primeiros 30 segundos para validar o motor.'
+        : 'Beta: arquivo processado em 9:16. Nesta etapa, a Norya usa os primeiros 30 segundos para validar o motor de renderização.'
+    });
   }catch(e){
     await fs.rm(input,{force:true}).catch(()=>{});
     await fs.rm(output,{force:true}).catch(()=>{});
