@@ -21,9 +21,11 @@ const PORT=process.env.PORT||10000;
 const WORK=path.join(os.tmpdir(),'norya-production');
 const INPUTS=path.join(WORK,'inputs');
 const CLIPS=path.join(WORK,'clips');
+const SOURCE_CACHE=path.join(WORK,'source-cache');
 const MAX_BYTES=300*1024*1024;
 const MAX_JOB_AGE=1000*60*60*2;
 const jobs=new Map();
+const sourceCache=new Map();
 
 const MASTER_EMAIL=(process.env.MASTER_EMAIL||'').trim().toLowerCase();
 const MASTER_PASSWORD_HASH=(process.env.MASTER_PASSWORD_HASH||'').trim().toLowerCase();
@@ -33,7 +35,7 @@ const SESSION_SECRET=process.env.SESSION_SECRET||'';
 const APIFY_TOKEN=(process.env.APIFY_TOKEN||'').trim();
 const NORYA_SELF_TEST_URL=(process.env.NORYA_SELF_TEST_URL||'').trim();
 
-for(const dir of [WORK,INPUTS,CLIPS]){try{fss.mkdirSync(dir,{recursive:true})}catch{}}
+for(const dir of [WORK,INPUTS,CLIPS,SOURCE_CACHE]){try{fss.mkdirSync(dir,{recursive:true})}catch{}}
 
 app.set('trust proxy',1);
 app.use(helmet({crossOriginResourcePolicy:{policy:'cross-origin'}}));
@@ -346,8 +348,9 @@ async function probeDuration(input){
 }
 async function energyTimeline(input){
   return new Promise((resolve,reject)=>{
-    const p=spawn(ffmpeg,['-hide_banner','-loglevel','error','-i',input,'-vn','-ac','1','-ar','1000','-f','s16le','pipe:1'],{windowsHide:true});
-    const energies=[];let sum=0,count=0;const sampleRate=1000;
+    const sampleRate=200;
+    const p=spawn(ffmpeg,['-hide_banner','-loglevel','error','-i',input,'-vn','-ac','1','-ar',String(sampleRate),'-f','s16le','pipe:1'],{windowsHide:true});
+    const energies=[];let sum=0,count=0;
     p.stdout.on('data',buf=>{
       const len=buf.length-(buf.length%2);
       for(let i=0;i<len;i+=2){
@@ -391,11 +394,11 @@ function selectMoments(energies,duration,clipDuration,count){
 }
 function renderClip(input,output,start,duration,quality,layout){
   const w=quality==='1080'?1080:720,h=quality==='1080'?1920:1280;
-  const vf=layout==='blur'
-    ? `split[bg][fg];[bg]scale=${w}:${h}:force_original_aspect_ratio=increase,crop=${w}:${h},boxblur=26:2[bg2];[fg]scale=${w}:${h}:force_original_aspect_ratio=decrease[fg2];[bg2][fg2]overlay=(W-w)/2:(H-h)/2`
-    : `scale=${w}:${h}:force_original_aspect_ratio=increase,crop=${w}:${h}`;
+  const core=layout==='blur'
+    ? `split[bg][fg];[bg]scale=${w}:${h}:force_original_aspect_ratio=increase,crop=${w}:${h},boxblur=18:1[bg2];[fg]scale=${w}:${h}:force_original_aspect_ratio=decrease[fg2];[bg2][fg2]overlay=(W-w)/2:(H-h)/2,fps=30`
+    : `scale=${w}:${h}:force_original_aspect_ratio=increase,crop=${w}:${h},fps=30`;
   return new Promise((resolve,reject)=>{
-    const args=['-y','-hide_banner','-loglevel','error','-ss',String(start),'-i',input,'-t',String(duration),'-vf',vf,'-c:v','libx264','-preset','veryfast','-crf',quality==='1080'?'25':'26','-c:a','aac','-b:a','128k','-movflags','+faststart',output];
+    const args=['-y','-hide_banner','-loglevel','error','-ss',String(start),'-i',input,'-t',String(duration),'-sws_flags','fast_bilinear','-vf',core,'-c:v','libx264','-preset','ultrafast','-tune','zerolatency','-crf',quality==='1080'?'28':'29','-c:a','aac','-b:a','112k','-movflags','+faststart',output];
     const p=spawn(ffmpeg,args,{windowsHide:true});let err='';
     p.stderr.on('data',d=>err+=d.toString());p.on('error',reject);
     p.on('close',code=>code===0?resolve():reject(new Error(err||'Falha ao renderizar clipada.')));
@@ -408,20 +411,46 @@ function publicJob(job){
   };
 }
 function updateJob(id,patch){const j=jobs.get(id);if(j)Object.assign(j,patch)}
+function cacheKeyForSource(source){
+  try{
+    const u=new URL(source);
+    const h=u.hostname.toLowerCase();
+    if(h==='youtu.be') return 'yt-'+u.pathname.replace(/^\//,'').split('/')[0];
+    if(h.includes('youtube.com')) return 'yt-'+(u.searchParams.get('v')||crypto.createHash('sha1').update(source).digest('hex'));
+  }catch{}
+  return crypto.createHash('sha1').update(String(source)).digest('hex');
+}
+async function getCachedSource(source,dest){
+  const key=cacheKeyForSource(source),entry=sourceCache.get(key);
+  if(!entry||Date.now()>entry.expires){sourceCache.delete(key);return false}
+  try{await fs.copyFile(entry.path,dest);console.log('[NORYA_CACHE] HIT',key);return true}catch{sourceCache.delete(key);return false}
+}
+async function saveCachedSource(source,input){
+  const key=cacheKeyForSource(source),target=path.join(SOURCE_CACHE,key+'.mp4');
+  try{
+    await fs.copyFile(input,target);
+    sourceCache.set(key,{path:target,expires:Date.now()+30*60*1000});
+    console.log('[NORYA_CACHE] SAVED',key);
+  }catch(e){console.warn('[NORYA_CACHE] save failed',e.message)}
+}
 async function processJob(job){
   let input=job.inputPath||path.join(INPUTS,job.id+'.source');
   try{
     updateJob(job.id,{status:'processing',progress:8,stage:'Importando vídeo'});
     if(!job.inputPath){
       const platform=detectPlatform(job.source);
-      if(platform==='YouTube') await downloadYoutube(job.source,input);
-      else if(platform==='TikTok'||platform==='Instagram'){
-        const e=new Error('TikTok e Instagram ainda precisam de link direto do arquivo nesta versão.');e.code='PLATFORM_NEEDS_DIRECT';throw e;
-      }else await downloadDirect(job.source,input);
+      const cached=platform==='YouTube' ? await getCachedSource(job.source,input) : false;
+      if(!cached){
+        if(platform==='YouTube'){
+          await downloadYoutube(job.source,input);
+          await saveCachedSource(job.source,input);
+        }else if(platform==='TikTok'||platform==='Instagram'){
+          const e=new Error('TikTok e Instagram ainda precisam de link direto do arquivo nesta versão.');e.code='PLATFORM_NEEDS_DIRECT';throw e;
+        }else await downloadDirect(job.source,input);
+      }
     }
     updateJob(job.id,{progress:30,stage:'Analisando conteúdo'});
-    const duration=await probeDuration(input);
-    const energies=await energyTimeline(input);
+    const [duration,energies]=await Promise.all([probeDuration(input),energyTimeline(input)]);
     const moments=selectMoments(energies,duration,job.options.clipDuration,job.options.clipCount);
     updateJob(job.id,{progress:56,stage:'Selecionando melhores momentos'});
     const results=[];
@@ -438,6 +467,11 @@ async function processJob(job){
         url:'/clips/'+file,
         title:'Clipada #'+(i+1)
       });
+      updateJob(job.id,{
+        results:[...results],
+        progress:56+Math.round(((i+1)/moments.length)*38),
+        stage:i+1<moments.length?'Clipada '+(i+1)+' pronta • preparando próxima':'Finalizando clipadas'
+      });
     }
     updateJob(job.id,{status:'done',progress:100,stage:'Clipadas prontas',results});
   }catch(e){
@@ -447,7 +481,7 @@ async function processJob(job){
   }
 }
 
-app.get('/health',(req,res)=>res.json({ok:true,version:'1.0.1',engine:'Norya Momentum Engine',authConfigured:!!(MASTER_EMAIL&&(MASTER_PASSWORD||(MASTER_PASSWORD_HASH&&MASTER_PASSWORD_SALT))&&SESSION_SECRET),linkImportProvider:APIFY_TOKEN?'configured':'direct'}));
+app.get('/health',(req,res)=>res.json({ok:true,version:'1.1.0',engine:'Norya Momentum Engine',authConfigured:!!(MASTER_EMAIL&&(MASTER_PASSWORD||(MASTER_PASSWORD_HASH&&MASTER_PASSWORD_SALT))&&SESSION_SECRET),linkImportProvider:APIFY_TOKEN?'configured':'direct'}));
 app.post('/api/auth/login',(req,res)=>{
   const email=String(req.body?.email||'').trim().toLowerCase(),password=String(req.body?.password||'');
   if(!MASTER_EMAIL||(!MASTER_PASSWORD&&!(MASTER_PASSWORD_HASH&&MASTER_PASSWORD_SALT))||!SESSION_SECRET) return res.status(503).json({error:'Acesso MASTER não configurado.'});
@@ -500,6 +534,12 @@ setInterval(()=>{
     if(now-new Date(j.createdAt).getTime()>MAX_JOB_AGE){
       for(const r of j.results||[]) fs.rm(path.join(CLIPS,path.basename(r.url)),{force:true}).catch(()=>{});
       jobs.delete(id);
+    }
+  }
+  for(const [key,entry] of sourceCache){
+    if(now>entry.expires){
+      fs.rm(entry.path,{force:true}).catch(()=>{});
+      sourceCache.delete(key);
     }
   }
 },10*60*1000).unref();
