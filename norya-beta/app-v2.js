@@ -1,6 +1,6 @@
 const API='https://norya-ia-api-beta.onrender.com';
 let authToken=localStorage.getItem('norya_token')||'';
-let currentUser=null,activeJob=null,pollTimer=null;
+let currentUser=null,activeJob=null,pollTimer=null,lastRenderedResultCount=0;
 
 const $=id=>document.getElementById(id);
 const loginView=$('loginView'),appView=$('appView'),loginForm=$('loginForm'),loginEmail=$('loginEmail'),loginPassword=$('loginPassword'),loginError=$('loginError'),loginButton=$('loginButton');
@@ -114,7 +114,7 @@ function optionsPayload(){
 async function startUpload(file){
   clearInterval(pollTimer);showMessage('');
   bridgeCallout.style.display='none';
-  resultsSection.style.display='none';clipsGrid.innerHTML='';
+  resultsSection.style.display='none';clipsGrid.innerHTML='';lastRenderedResultCount=0;lastRenderedResultCount=0;
   statusSource.textContent='UPLOAD';
   setProgress(5,'Enviando vídeo',file.name);
   generateBtn.disabled=true;uploadBtn.disabled=true;
@@ -181,6 +181,12 @@ async function pollJob(id){
       }
       setProgress(shownProgress,j.status==='done'?'Clipadas prontas':j.status==='error'?'Importação interrompida':j.stage,shownText);
 
+      if(j.status==='processing'&&(j.results?.length||0)>lastRenderedResultCount){
+        lastRenderedResultCount=j.results.length;
+        renderResults(j,false);
+        showMessage('Clipada '+lastRenderedResultCount+' pronta. As próximas continuam sendo geradas.','success');
+      }
+
       if(j.status==='done'){
         clearInterval(pollTimer);
         renderResults(j);saveHistory(j);
@@ -206,7 +212,7 @@ async function pollJob(id){
   await tick();pollTimer=setInterval(tick,1600);
 }
 
-function renderResults(job){
+function renderResults(job,scroll=true){
   resultsSection.style.display='block';
   resultCount.textContent=(job.results?.length||0)+' arquivos';
   clipsGrid.innerHTML='';
@@ -222,7 +228,7 @@ function renderResults(job){
     clipsGrid.appendChild(card);
   });
   bindTilt();bindMagnetic();
-  resultsSection.scrollIntoView({behavior:'smooth',block:'start'});
+  if(scroll)resultsSection.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function formatTime(sec){
   sec=Math.max(0,Math.round(sec||0));
