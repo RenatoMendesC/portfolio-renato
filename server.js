@@ -78,6 +78,16 @@ app.use('/clips',express.static(CLIPS,{maxAge:0,fallthrough:false}));
 
 const blockedHosts=['youtube.com','www.youtube.com','m.youtube.com','youtu.be','tiktok.com','www.tiktok.com','instagram.com','www.instagram.com'];
 
+function detectPlatform(raw){
+  let u;
+  try{u=new URL(raw)}catch{return null}
+  const h=u.hostname.toLowerCase();
+  if(h==='youtu.be'||h==='youtube.com'||h.endsWith('.youtube.com')) return 'YouTube';
+  if(h==='tiktok.com'||h.endsWith('.tiktok.com')) return 'TikTok';
+  if(h==='instagram.com'||h.endsWith('.instagram.com')) return 'Instagram';
+  return null;
+}
+
 function privateIPv4(ip){
   const p=ip.split('.').map(Number);
   if(p.length!==4||p.some(Number.isNaN)) return false;
@@ -117,7 +127,7 @@ async function validateUrl(raw){
   if(!['http:','https:'].includes(u.protocol)) throw new Error('Use apenas links http ou https.');
   const host=u.hostname.toLowerCase();
   if(blockedHosts.some(h=>host===h||host.endsWith('.'+h))){
-    const e=new Error('Nesta beta, links do YouTube/TikTok/Instagram ainda não são processados diretamente. Use um link direto de vídeo (.mp4) ou o vídeo-demo.');
+    const e=new Error('Este endereço é de uma plataforma social. Vincule uma fonte original autorizada para processar o vídeo.');
     e.code='UNSUPPORTED_PLATFORM';
     throw e;
   }
@@ -182,8 +192,20 @@ app.get('/api/auth/me',requireAuth,(req,res)=>{
 app.post('/api/clip',requireAuth,async(req,res)=>{
   if(busy) return res.status(429).json({error:'A beta está processando outro vídeo. Tente novamente em instantes.'});
   const platformUrl=String(req.body?.platformUrl||'').trim();
-  const sourceUrl=String(req.body?.sourceUrl||req.body?.url||'').trim();
+  const legacyUrl=String(req.body?.url||'').trim();
+  const sourceUrl=String(req.body?.sourceUrl||legacyUrl||'').trim();
   if(!sourceUrl) return res.status(400).json({error:'Informe a fonte original do vídeo.'});
+
+  const detected=detectPlatform(sourceUrl);
+  if(detected && !req.body?.sourceUrl){
+    return res.status(409).json({
+      needsSource:true,
+      platform:detected,
+      platformUrl:legacyUrl||sourceUrl,
+      message:'Fonte original necessária'
+    });
+  }
+
   busy=true;
   await fs.mkdir(CLIPS,{recursive:true});
   const id=crypto.randomUUID();
