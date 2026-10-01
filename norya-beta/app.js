@@ -191,16 +191,8 @@ async function pollJob(id){
       }else if(j.status==='error'){
         clearInterval(pollTimer);generateBtn.disabled=false;uploadBtn.disabled=false;
         if(j.errorCode==='YOUTUBE_BLOCKED'){
-          const mobile=matchMedia('(max-width: 700px)').matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-          bridgeCallout.style.display='flex';
-          if(mobile){
-            bridgeCallout.innerHTML='<div><span class="eyebrow">YOUTUBE BLOQUEOU A NUVEM</span><h4>Continue pelo celular</h4><p>O app está funcionando no mobile. Para este vídeo específico, selecione o arquivo original no celular e a Norya continua a análise automaticamente.</p></div><button class="secondary" id="mobileUploadFallback" type="button">ENVIAR VÍDEO</button>';
-            setTimeout(()=>{const b=document.getElementById('mobileUploadFallback');if(b)b.onclick=()=>uploadInput.click()},0);
-            showMessage('O YouTube bloqueou a importação cloud deste link. No celular, envie o arquivo original para continuar.','error');
-          }else{
-            showMessage('O YouTube bloqueou o servidor cloud. Ative o Norya Link Engine e depois continue só colando links.','error');
-            checkBridge();
-          }
+          bridgeCallout.style.display='none';
+          showMessage('Não foi possível importar este vídeo pelo link. Tente outro link ou envie o arquivo do vídeo.','error');
         }else showMessage(j.error||'Falha no processamento.','error');
       }
     }catch(e){
