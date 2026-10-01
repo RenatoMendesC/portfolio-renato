@@ -31,6 +31,7 @@ const MASTER_PASSWORD_SALT=(process.env.MASTER_PASSWORD_SALT||'').trim().toLower
 const MASTER_PASSWORD=process.env.MASTER_PASSWORD||'';
 const SESSION_SECRET=process.env.SESSION_SECRET||'';
 const APIFY_TOKEN=(process.env.APIFY_TOKEN||'').trim();
+const NORYA_SELF_TEST_URL=(process.env.NORYA_SELF_TEST_URL||'').trim();
 
 for(const dir of [WORK,INPUTS,CLIPS]){try{fss.mkdirSync(dir,{recursive:true})}catch{}}
 
@@ -503,4 +504,21 @@ setInterval(()=>{
   }
 },10*60*1000).unref();
 
-app.listen(PORT,'0.0.0.0',()=>console.log('Norya IA 1.0 API on '+PORT+' | Apify '+(APIFY_TOKEN?'ON':'OFF')));
+app.listen(PORT,'0.0.0.0',()=>{
+  console.log('Norya IA 1.0 API on '+PORT+' | Apify '+(APIFY_TOKEN?'ON':'OFF'));
+  if(NORYA_SELF_TEST_URL){
+    setTimeout(async()=>{
+      const dest=path.join(INPUTS,'selftest-'+Date.now()+'.mp4');
+      try{
+        console.log('[NORYA_SELFTEST] START',NORYA_SELF_TEST_URL);
+        await downloadYoutubeProvider(NORYA_SELF_TEST_URL,dest);
+        const st=await fs.stat(dest);
+        console.log('[NORYA_SELFTEST] SUCCESS bytes='+st.size);
+      }catch(e){
+        console.error('[NORYA_SELFTEST] FAILED',e.message);
+      }finally{
+        await fs.rm(dest,{force:true}).catch(()=>{});
+      }
+    },2500);
+  }
+});
