@@ -30,6 +30,7 @@ const MASTER_PASSWORD_HASH=(process.env.MASTER_PASSWORD_HASH||'').trim().toLower
 const MASTER_PASSWORD_SALT=(process.env.MASTER_PASSWORD_SALT||'').trim().toLowerCase();
 const MASTER_PASSWORD=process.env.MASTER_PASSWORD||'';
 const SESSION_SECRET=process.env.SESSION_SECRET||'';
+const APIFY_TOKEN=(process.env.APIFY_TOKEN||'').trim();
 
 for(const dir of [WORK,INPUTS,CLIPS]){try{fss.mkdirSync(dir,{recursive:true})}catch{}}
 
@@ -160,7 +161,41 @@ async function downloadDirect(url,dest){
   const limiter=new Transform({transform(chunk,enc,cb){bytes+=chunk.length;if(bytes>MAX_BYTES)return cb(new Error('O vídeo ultrapassa 300 MB.'));cb(null,chunk)}});
   await pipeline(Readable.fromWeb(res.body),limiter,fss.createWriteStream(dest));
 }
+async function downloadYoutubeProvider(url,dest){
+  if(!APIFY_TOKEN) throw new Error('Provider de importação não configurado.');
+  const ctrl=new AbortController();
+  const timer=setTimeout(()=>ctrl.abort(),300000);
+  try{
+    const endpoint='https://api.apify.com/v2/acts/datapipe~youtube-video-downloader/run-sync-get-dataset-items?token='+encodeURIComponent(APIFY_TOKEN);
+    const resp=await fetch(endpoint,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({videoUrls:[url],quality:'720p',format:'mp4',maxConcurrency:1}),
+      signal:ctrl.signal
+    });
+    if(!resp.ok) throw new Error('Provider respondeu HTTP '+resp.status);
+    const items=await resp.json();
+    const item=Array.isArray(items)?items[0]:null;
+    if(!item||String(item.status).toLowerCase()!=='success'||!item.downloadUrl){
+      throw new Error(item?.error||'Provider não retornou mídia.');
+    }
+    await downloadDirect(item.downloadUrl,dest);
+    return true;
+  }finally{clearTimeout(timer)}
+}
+
 async function downloadYoutube(url,dest){
+  let providerError=null;
+  if(APIFY_TOKEN){
+    try{
+      await downloadYoutubeProvider(url,dest);
+      return;
+    }catch(e){
+      providerError=e;
+      await fs.rm(dest,{force:true}).catch(()=>{});
+    }
+  }
+
   try{
     await youtubedl(url,{
       noPlaylist:true,noWarnings:true,
@@ -174,8 +209,11 @@ async function downloadYoutube(url,dest){
   }catch(e){
     await fs.rm(dest,{force:true}).catch(()=>{});
     const msg=String(e?.stderr||e?.message||e);
-    const err=new Error('O YouTube bloqueou a importação em nuvem. Use o Norya Link Engine para importar este link automaticamente pelo seu computador.');
-    err.code=/private|members.only|age.restricted|unavailable/i.test(msg)?'SOURCE_UNAVAILABLE':'YOUTUBE_BLOCKED';
+    const err=new Error(/private|members.only|unavailable/i.test(msg)
+      ? 'Este vídeo não está disponível para processamento.'
+      : 'Não foi possível importar este vídeo automaticamente.');
+    err.code=/private|members.only|unavailable/i.test(msg)?'SOURCE_UNAVAILABLE':'IMPORT_UNAVAILABLE';
+    if(providerError) err.providerFallbackTried=true;
     throw err;
   }
 }
@@ -297,7 +335,7 @@ async function processJob(job){
   }
 }
 
-app.get('/health',(req,res)=>res.json({ok:true,version:'1.0.0',engine:'Norya Momentum Engine',authConfigured:!!(MASTER_EMAIL&&(MASTER_PASSWORD||(MASTER_PASSWORD_HASH&&MASTER_PASSWORD_SALT))&&SESSION_SECRET)}));
+app.get('/health',(req,res)=>res.json({ok:true,version:'1.0.1',engine:'Norya Momentum Engine',authConfigured:!!(MASTER_EMAIL&&(MASTER_PASSWORD||(MASTER_PASSWORD_HASH&&MASTER_PASSWORD_SALT))&&SESSION_SECRET),linkImportProvider:APIFY_TOKEN?'configured':'direct'}));
 app.post('/api/auth/login',(req,res)=>{
   const email=String(req.body?.email||'').trim().toLowerCase(),password=String(req.body?.password||'');
   if(!MASTER_EMAIL||(!MASTER_PASSWORD&&!(MASTER_PASSWORD_HASH&&MASTER_PASSWORD_SALT))||!SESSION_SECRET) return res.status(503).json({error:'Acesso MASTER não configurado.'});
