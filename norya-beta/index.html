@@ -9,7 +9,7 @@
 :root{--bg:#050706;--panel:#0a0e0b;--line:#1c281f;--green:#b8ff3d;--muted:#7d877f;--text:#f4f7f4}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 70% 5%,rgba(184,255,61,.08),transparent 28%),var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif}.loginScreen{min-height:100vh;display:grid;grid-template-columns:1.1fr .9fr;align-items:stretch;background:radial-gradient(circle at 28% 30%,rgba(184,255,61,.10),transparent 28%),#030504}.loginHero{padding:64px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}.loginHero:after{content:"";position:absolute;inset:auto -80px -120px 15%;height:260px;background:radial-gradient(circle,rgba(184,255,61,.20),transparent 65%);filter:blur(18px)}.loginHero h1{font-size:clamp(52px,7vw,92px);margin:18px 0 22px}.loginHero p{max-width:620px;color:#9aa39c;font-size:18px;line-height:1.65}.loginFeatures{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:34px;max-width:760px}.loginFeature{border:1px solid #263329;background:#070b08;padding:18px}.loginFeature b{display:block;margin-bottom:7px}.loginPanel{display:flex;align-items:center;justify-content:center;padding:34px}.loginCard{width:min(520px,100%);border:1px solid #487033;background:linear-gradient(180deg,rgba(16,26,17,.96),rgba(5,8,6,.98));padding:42px;box-shadow:0 0 50px rgba(184,255,61,.08)}.loginBrand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:22px;margin-bottom:30px}.loginMark{width:54px;height:54px;border:1px solid #5f8f3d;display:grid;place-items:center;font-size:24px;color:var(--green);box-shadow:0 0 26px rgba(184,255,61,.15)}.loginCard h2{font-size:34px;margin:0 0 8px}.loginCard>p{color:#88928a;margin:0 0 28px}.field{display:grid;gap:8px;margin:16px 0}.field label{font-weight:700;font-size:13px}.field input{height:56px;border:1px solid #334238;background:#080c09;color:#fff;padding:0 14px;outline:0;font-size:15px}.field input:focus{border-color:#6f9a49}.loginError{display:none;border:1px solid #5d2727;background:#120909;color:#ffb3b3;padding:12px 14px;margin-top:12px;font-size:12px}.loginMeta{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:18px 0 0;color:#879188;font-size:11px}.masterPill{border:1px solid #5c813e;color:var(--green);padding:8px 10px;font:11px Consolas,monospace}.appShell{display:none}
 a{color:inherit;text-decoration:none}.shell{width:min(1160px,calc(100% - 28px));margin:auto}.mono{font-family:Consolas,monospace}.green{color:var(--green)}
-header{height:78px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #141b16;position:sticky;top:0;background:rgba(5,7,6,.88);backdrop-filter:blur(14px);z-index:10}.logo{font-weight:900;letter-spacing:.07em;display:flex;align-items:center;gap:10px}.mark{width:34px;height:34px;border:1px solid #38502d;display:grid;place-items:center;color:var(--green);background:#0e160f;box-shadow:0 0 24px rgba(184,255,61,.08)}nav{display:flex;gap:22px;align-items:center;font-size:13px;color:#b7beb8}.btn{border:0;background:var(--green);color:#071006;padding:14px 18px;font-weight:900;cursor:pointer;letter-spacing:.03em}.ghost{background:#0b100c;color:#dce1dd;border:1px solid #29362c}.hero{padding:92px 0 62px}.eyebrow{font:11px Consolas,monospace;color:#8a948c;letter-spacing:.16em}.eyebrow span{color:var(--green)}h1{font-size:clamp(58px,8vw,108px);line-height:.88;letter-spacing:-.07em;margin:18px 0 28px;max-width:980px}.hero p{max-width:720px;color:#8f9991;font-size:18px;line-height:1.65}.actions{display:flex;gap:16px;align-items:center;margin-top:30px}.tag{font:10px Consolas,monospace;color:#839086;border:1px solid #203025;padding:10px 12px}.engine{margin-top:56px;border:1px solid var(--line);background:#080b09;padding:0;box-shadow:0 30px 90px rgba(0,0,0,.25)}.engineTop{height:45px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:7px;padding:0 14px;font:10px Consolas,monospace;color:#69736b}.dot{width:7px;height:7px;border-radius:50%;background:#283029}.engineTop b{margin-left:8px;color:#9ba49d}.online{margin-left:auto;color:var(--green)}.input{margin:20px;min-height:62px;border:1px solid #2a392d;background:#040605;display:flex;align-items:center;color:#5f6961;font:12px Consolas,monospace}.input input{flex:1;min-width:0;height:60px;border:0;outline:0;background:transparent;color:#fff;padding:0 18px;font:12px Consolas,monospace}.input input::placeholder{color:#59635c}.input button{margin-left:auto;margin-right:8px}.homeMsg{display:none;margin:0 20px 18px;padding:14px;border:1px solid #263528;background:#090d0a;font:11px Consolas,monospace;color:#91a094}.homeMsg.error{border-color:#5d2727;color:#ffb3b3}.uploadRow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}.fileHint{font:10px Consolas,monospace;color:#667168}.inlineError{display:none;margin-top:14px;padding:14px;border:1px solid #5d2727;background:#120909;color:#ffb3b3;font:11px Consolas,monospace}.metrics{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}.metric{padding:18px;border-right:1px solid var(--line);display:grid;gap:5px}.metric:last-child{border:0}.metric span{font:9px Consolas,monospace;color:#59635c}.metric b{font-size:12px}.section{padding:76px 0}.sectionHead{display:flex;gap:18px;align-items:flex-start;margin-bottom:26px}.sectionHead>span{font:11px Consolas,monospace;color:var(--green);padding-top:8px}.sectionHead small{font:10px Consolas,monospace;color:#667168}.sectionHead h2{font-size:42px;letter-spacing:-.045em;margin:8px 0}.steps,.pricing{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line)}.step{padding:30px;min-height:230px;border-right:1px solid var(--line);background:#080b09}.step:last-child{border:0}.step .n{font:10px Consolas,monospace;color:#657068}.step .icon{width:46px;height:46px;border:1px solid #2d422c;color:var(--green);display:grid;place-items:center;margin:40px 0 18px}.step h3{margin:0 0 10px}.step p{color:#79827b;font-size:13px;line-height:1.6}.pricing{grid-template-columns:repeat(4,1fr)}.price{padding:28px;min-height:370px;border-right:1px solid var(--line);background:#080b09;display:flex;flex-direction:column}.price:last-child{border:0}.price.featured{background:radial-gradient(circle at 50% 0,rgba(184,255,61,.12),transparent 30%),#0a0f0b}.price small{font:10px Consolas,monospace;color:#7b867d}.price h3{font-size:28px;margin:22px 0 4px}.price p{color:#687169;font-size:12px}.price ul{list-style:none;padding:0;margin:25px 0;display:grid;gap:12px;color:#aeb6b0;font-size:13px}.price li:before{content:"✓";color:var(--green);margin-right:9px}.price button{margin-top:auto}.beta{border:1px solid #2d3e31;background:linear-gradient(90deg,rgba(184,255,61,.08),transparent);padding:38px;display:flex;align-items:center;justify-content:space-between}.beta h2{font-size:34px;margin:8px 0}.dashboard{display:none;padding:36px 0 80px}.dashGrid{display:grid;grid-template-columns:220px 1fr;min-height:720px;border:1px solid var(--line);background:#080b09}.side{border-right:1px solid var(--line);padding:24px;display:flex;flex-direction:column}.side .menu{display:grid;gap:8px;margin-top:48px}.side button{background:transparent;border:1px solid transparent;color:#7f8981;text-align:left;padding:12px;cursor:pointer}.side button.active{border-color:#263528;background:#0c120d;color:var(--green)}.user{margin-top:auto;border-top:1px solid var(--line);padding-top:18px;font-size:12px}.main{padding:34px}.top{display:flex;justify-content:space-between;gap:20px}.usage{border:1px solid #253228;padding:12px 16px;display:flex;gap:10px;align-items:center}.usage strong{font:700 28px Consolas,monospace;color:var(--green)}.generator{margin-top:30px;border:1px solid var(--line);padding:28px;background:#070a08}.urlbox{margin-top:20px;border:1px solid #2b3a2d;display:flex;min-height:58px;background:#030504}.urlbox input{flex:1;background:transparent;border:0;outline:0;color:white;padding:0 16px}.status{margin-top:18px;display:none;border:1px solid #233128;padding:16px}.bar{height:4px;background:#152018;margin-top:12px}.bar i{display:block;width:0;height:100%;background:var(--green);transition:width .45s}.result{display:none;margin-top:22px;border:1px solid var(--line);padding:22px;grid-template-columns:1fr 220px;gap:28px}.phone{aspect-ratio:9/16;border:1px solid #2c3b2f;background:linear-gradient(180deg,#131a14,#020302);display:grid;place-items:center;color:#758078;text-align:center;padding:18px}.score{font:700 44px Consolas,monospace;color:var(--green)}footer{padding:38px 0 60px;border-top:1px solid #151b17;color:#5e675f;font-size:11px}.notice{position:fixed;right:18px;bottom:18px;border:1px solid #31452f;background:#0a100b;padding:12px 14px;font:10px Consolas,monospace;color:#9fac9f;z-index:20}
+header{height:78px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #141b16;position:sticky;top:0;background:rgba(5,7,6,.88);backdrop-filter:blur(14px);z-index:10}.logo{font-weight:900;letter-spacing:.07em;display:flex;align-items:center;gap:10px}.mark{width:34px;height:34px;border:1px solid #38502d;display:grid;place-items:center;color:var(--green);background:#0e160f;box-shadow:0 0 24px rgba(184,255,61,.08)}nav{display:flex;gap:22px;align-items:center;font-size:13px;color:#b7beb8}.btn{border:0;background:var(--green);color:#071006;padding:14px 18px;font-weight:900;cursor:pointer;letter-spacing:.03em}.ghost{background:#0b100c;color:#dce1dd;border:1px solid #29362c}.hero{padding:92px 0 62px}.eyebrow{font:11px Consolas,monospace;color:#8a948c;letter-spacing:.16em}.eyebrow span{color:var(--green)}h1{font-size:clamp(58px,8vw,108px);line-height:.88;letter-spacing:-.07em;margin:18px 0 28px;max-width:980px}.hero p{max-width:720px;color:#8f9991;font-size:18px;line-height:1.65}.actions{display:flex;gap:16px;align-items:center;margin-top:30px}.tag{font:10px Consolas,monospace;color:#839086;border:1px solid #203025;padding:10px 12px}.engine{margin-top:56px;border:1px solid var(--line);background:#080b09;padding:0;box-shadow:0 30px 90px rgba(0,0,0,.25)}.engineTop{height:45px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:7px;padding:0 14px;font:10px Consolas,monospace;color:#69736b}.dot{width:7px;height:7px;border-radius:50%;background:#283029}.engineTop b{margin-left:8px;color:#9ba49d}.online{margin-left:auto;color:var(--green)}.input{margin:20px;min-height:62px;border:1px solid #2a392d;background:#040605;display:flex;align-items:center;color:#5f6961;font:12px Consolas,monospace}.input input{flex:1;min-width:0;height:60px;border:0;outline:0;background:transparent;color:#fff;padding:0 18px;font:12px Consolas,monospace}.input input::placeholder{color:#59635c}.input button{margin-left:auto;margin-right:8px}.homeMsg{display:none;margin:0 20px 18px;padding:14px;border:1px solid #263528;background:#090d0a;font:11px Consolas,monospace;color:#91a094}.homeMsg.error{border-color:#5d2727;color:#ffb3b3}.uploadRow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}.fileHint{font:10px Consolas,monospace;color:#667168}.inlineError{display:none;margin-top:14px;padding:14px;border:1px solid #5d2727;background:#120909;color:#ffb3b3;font:11px Consolas,monospace}.sourcePanel{display:none;margin-top:16px;border:1px solid #334238;background:#080c09;padding:18px}.sourcePanel.active{display:block}.sourceHead{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}.sourceHead h3{margin:4px 0 6px;font-size:20px}.sourceHead p{margin:0;color:#7f8981;font-size:12px;line-height:1.5}.sourceBadge{font:10px Consolas,monospace;color:var(--green);border:1px solid #496638;padding:7px 9px;white-space:nowrap}.sourceTabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 12px}.sourceTab{border:1px solid #2b382e;background:#0a0e0b;color:#aeb7b0;padding:10px 12px;font:11px Consolas,monospace;cursor:pointer}.sourceTab.active{border-color:#6f954c;color:var(--green);background:#10180f}.sourceUrlRow{display:flex;gap:8px}.sourceUrlRow input{flex:1;min-width:0;height:50px;border:1px solid #2f3c32;background:#030504;color:#fff;padding:0 13px;outline:0}.sourceUrlRow input:focus{border-color:#6f954c}.sourceHelp{margin-top:10px;color:#687169;font-size:11px;line-height:1.45}.sourceSaved{display:none;margin-top:12px;color:var(--green);font:11px Consolas,monospace}.metrics{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}.metric{padding:18px;border-right:1px solid var(--line);display:grid;gap:5px}.metric:last-child{border:0}.metric span{font:9px Consolas,monospace;color:#59635c}.metric b{font-size:12px}.section{padding:76px 0}.sectionHead{display:flex;gap:18px;align-items:flex-start;margin-bottom:26px}.sectionHead>span{font:11px Consolas,monospace;color:var(--green);padding-top:8px}.sectionHead small{font:10px Consolas,monospace;color:#667168}.sectionHead h2{font-size:42px;letter-spacing:-.045em;margin:8px 0}.steps,.pricing{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line)}.step{padding:30px;min-height:230px;border-right:1px solid var(--line);background:#080b09}.step:last-child{border:0}.step .n{font:10px Consolas,monospace;color:#657068}.step .icon{width:46px;height:46px;border:1px solid #2d422c;color:var(--green);display:grid;place-items:center;margin:40px 0 18px}.step h3{margin:0 0 10px}.step p{color:#79827b;font-size:13px;line-height:1.6}.pricing{grid-template-columns:repeat(4,1fr)}.price{padding:28px;min-height:370px;border-right:1px solid var(--line);background:#080b09;display:flex;flex-direction:column}.price:last-child{border:0}.price.featured{background:radial-gradient(circle at 50% 0,rgba(184,255,61,.12),transparent 30%),#0a0f0b}.price small{font:10px Consolas,monospace;color:#7b867d}.price h3{font-size:28px;margin:22px 0 4px}.price p{color:#687169;font-size:12px}.price ul{list-style:none;padding:0;margin:25px 0;display:grid;gap:12px;color:#aeb6b0;font-size:13px}.price li:before{content:"✓";color:var(--green);margin-right:9px}.price button{margin-top:auto}.beta{border:1px solid #2d3e31;background:linear-gradient(90deg,rgba(184,255,61,.08),transparent);padding:38px;display:flex;align-items:center;justify-content:space-between}.beta h2{font-size:34px;margin:8px 0}.dashboard{display:none;padding:36px 0 80px}.dashGrid{display:grid;grid-template-columns:220px 1fr;min-height:720px;border:1px solid var(--line);background:#080b09}.side{border-right:1px solid var(--line);padding:24px;display:flex;flex-direction:column}.side .menu{display:grid;gap:8px;margin-top:48px}.side button{background:transparent;border:1px solid transparent;color:#7f8981;text-align:left;padding:12px;cursor:pointer}.side button.active{border-color:#263528;background:#0c120d;color:var(--green)}.user{margin-top:auto;border-top:1px solid var(--line);padding-top:18px;font-size:12px}.main{padding:34px}.top{display:flex;justify-content:space-between;gap:20px}.usage{border:1px solid #253228;padding:12px 16px;display:flex;gap:10px;align-items:center}.usage strong{font:700 28px Consolas,monospace;color:var(--green)}.generator{margin-top:30px;border:1px solid var(--line);padding:28px;background:#070a08}.urlbox{margin-top:20px;border:1px solid #2b3a2d;display:flex;min-height:58px;background:#030504}.urlbox input{flex:1;background:transparent;border:0;outline:0;color:white;padding:0 16px}.status{margin-top:18px;display:none;border:1px solid #233128;padding:16px}.bar{height:4px;background:#152018;margin-top:12px}.bar i{display:block;width:0;height:100%;background:var(--green);transition:width .45s}.result{display:none;margin-top:22px;border:1px solid var(--line);padding:22px;grid-template-columns:1fr 220px;gap:28px}.phone{aspect-ratio:9/16;border:1px solid #2c3b2f;background:linear-gradient(180deg,#131a14,#020302);display:grid;place-items:center;color:#758078;text-align:center;padding:18px}.score{font:700 44px Consolas,monospace;color:var(--green)}footer{padding:38px 0 60px;border-top:1px solid #151b17;color:#5e675f;font-size:11px}.notice{position:fixed;right:18px;bottom:18px;border:1px solid #31452f;background:#0a100b;padding:12px 14px;font:10px Consolas,monospace;color:#9fac9f;z-index:20}
 @media(max-width:900px){.loginScreen{grid-template-columns:1fr}.loginHero{display:none}.loginPanel{min-height:100vh}.loginFeatures{grid-template-columns:1fr}.loginCard{padding:28px}nav a{display:none}.steps,.pricing{grid-template-columns:1fr 1fr}.dashGrid{grid-template-columns:1fr}.side{display:none}.metrics{grid-template-columns:1fr 1fr}.result{grid-template-columns:1fr}}@media(max-width:620px){h1{font-size:58px}.steps,.pricing{grid-template-columns:1fr}.actions,.beta,.top{align-items:flex-start;flex-direction:column}.input{display:grid;padding:12px}.input button{margin:12px 0 0;width:100%}.main{padding:18px}}
 </style>
 </head>
@@ -56,7 +56,29 @@ header{height:78px;display:flex;align-items:center;justify-content:space-between
 <section class="section shell"><div class="beta"><div><small class="mono green">NORYA / PUBLIC BETA</small><h2>Primeiro validamos a experiência.<br>Depois ligamos o motor completo.</h2></div><button class="btn" data-demo>Testar agora →</button></div></section>
 </main>
 <section class="dashboard shell" id="dashboard"><div class="dashGrid"><aside class="side"><div class="logo"><span class="mark">N</span>NORYA <span class="green">IA</span></div><div class="menu"><button class="active">✦ Gerar clipada</button><button>◫ Histórico</button><button>◇ Meu plano</button></div><div class="user"><b id="userName">MASTER</b><br><span class="green mono" id="userPlan">MASTER / OWNER</span></div></aside><div class="main"><div class="top"><div><small class="mono green">NORYA DASHBOARD / BETA</small><h2 style="font-size:36px;margin:8px 0">Bom dia.</h2></div><div class="usage"><strong id="usageValue">∞</strong><div><b id="usageLabel">clipadas ilimitadas</b><br><small id="usageSub">MASTER</small></div></div></div>
-<div class="generator"><small class="mono green">NEW CLIP</small><h2>Qual conteúdo vamos clipar?</h2><div class="urlbox"><input id="videoUrl" placeholder="Cole um link de vídeo autorizado"><button class="btn" id="analyze">ANALISAR →</button></div><div class="uploadRow"><button class="ghost btn" id="dashUploadBtn">OU ENVIAR ARQUIVO</button><span class="fileHint">MP4, MOV ou WEBM • até 200 MB</span></div><input id="dashFileInput" type="file" accept="video/*" hidden><div class="inlineError" id="inlineError"></div><p style="color:#626c64;font-size:11px">Beta pública: links diretos de vídeo podem ser processados agora. YouTube/TikTok/Instagram ainda não são importados diretamente.</p><div class="status" id="status"><b id="statusText">Analisando conteúdo...</b><div class="bar"><i id="bar"></i></div></div><div class="result" id="result"><div><small class="mono green">NORYA SCORE</small><div class="score" id="scoreValue">—</div><h2 id="resultTitle">Clipada pronta.</h2><p id="resultText" style="color:#7b857d;line-height:1.6">Seu clipe foi renderizado pela Norya.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn" id="downloadClip" href="#" download="norya-clip.mp4">BAIXAR CLIPADA ↓</a><button class="ghost btn" id="again">Testar outro link</button></div></div><div class="phone"><video id="clipPreview" controls playsinline style="width:100%;height:100%;object-fit:cover;display:none"></video><span id="previewPlaceholder">PRÉVIA<br>9:16</span></div></div></div>
+<div class="generator"><small class="mono green">NEW CLIP</small><h2>Qual conteúdo vamos clipar?</h2><div class="urlbox"><input id="videoUrl" placeholder="Cole um link de vídeo autorizado"><button class="btn" id="analyze">ANALISAR →</button></div><div class="uploadRow"><button class="ghost btn" id="dashUploadBtn">OU ENVIAR ARQUIVO</button><span class="fileHint">MP4, MOV ou WEBM • até 200 MB</span></div><input id="dashFileInput" type="file" accept="video/*" hidden><div class="inlineError" id="inlineError"></div>
+<div class="sourcePanel" id="sourcePanel">
+  <div class="sourceHead">
+    <div><small class="mono green">YOUTUBE DETECTADO</small><h3>Vincular fonte original</h3><p>O link do YouTube fica como referência. Escolha onde está o arquivo original/autorizado que a Norya deve processar.</p></div>
+    <span class="sourceBadge">1x POR VÍDEO</span>
+  </div>
+  <div class="sourceTabs">
+    <button class="sourceTab active" data-source="drive">GOOGLE DRIVE</button>
+    <button class="sourceTab" data-source="dropbox">DROPBOX</button>
+    <button class="sourceTab" data-source="direct">LINK DIRETO</button>
+    <button class="sourceTab" data-source="upload">UPLOAD</button>
+  </div>
+  <div id="sourceLinkArea">
+    <div class="sourceUrlRow"><input id="sourceUrl" placeholder="Cole o link público do arquivo original"><button class="btn" id="useSourceBtn">USAR FONTE →</button></div>
+    <div class="sourceHelp" id="sourceHelp">No Google Drive, deixe o arquivo como “qualquer pessoa com o link”.</div>
+  </div>
+  <div id="sourceUploadArea" style="display:none">
+    <button class="ghost btn" id="sourceUploadBtn">SELECIONAR ARQUIVO</button>
+    <span class="fileHint">MP4, MOV ou WEBM • até 200 MB</span>
+    <input id="sourceFileInput" type="file" accept="video/*" hidden>
+  </div>
+  <div class="sourceSaved" id="sourceSaved">✓ Fonte vinculada. Nas próximas vezes a Norya reutiliza essa associação neste navegador.</div>
+</div><p style="color:#626c64;font-size:11px">Beta pública: links diretos de vídeo podem ser processados agora. YouTube/TikTok/Instagram ainda não são importados diretamente.</p><div class="status" id="status"><b id="statusText">Analisando conteúdo...</b><div class="bar"><i id="bar"></i></div></div><div class="result" id="result"><div><small class="mono green">NORYA SCORE</small><div class="score" id="scoreValue">—</div><h2 id="resultTitle">Clipada pronta.</h2><p id="resultText" style="color:#7b857d;line-height:1.6">Seu clipe foi renderizado pela Norya.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn" id="downloadClip" href="#" download="norya-clip.mp4">BAIXAR CLIPADA ↓</a><button class="ghost btn" id="again">Testar outro link</button></div></div><div class="phone"><video id="clipPreview" controls playsinline style="width:100%;height:100%;object-fit:cover;display:none"></video><span id="previewPlaceholder">PRÉVIA<br>9:16</span></div></div></div>
 <div style="margin-top:30px"><small class="mono green">PLANO ATUAL</small><h3>FREE — 1 clipe por dia</h3><p style="color:#69736b">Creator R$ 29,90 • Pro R$ 59,90 • Master R$ 119,97/mês • fidelidade de 12 meses</p></div>
 </div></div></section>
 <footer><div class="shell">© 2026 Norya IA — Beta pública para testes. Use apenas conteúdo próprio ou autorizado.</div></footer>
@@ -71,6 +93,8 @@ const homeUrl=document.getElementById('homeVideoUrl'),homeAnalyze=document.getEl
 const homeUploadBtn=document.getElementById('homeUploadBtn'),homeFileInput=document.getElementById('homeFileInput');
 const videoUrl=document.getElementById('videoUrl'),analyze=document.getElementById('analyze'),status=document.getElementById('status'),bar=document.getElementById('bar'),result=document.getElementById('result'),txt=document.getElementById('statusText');
 const dashUploadBtn=document.getElementById('dashUploadBtn'),dashFileInput=document.getElementById('dashFileInput'),inlineError=document.getElementById('inlineError');
+const sourcePanel=document.getElementById('sourcePanel'),sourceUrlInput=document.getElementById('sourceUrl'),useSourceBtn=document.getElementById('useSourceBtn'),sourceHelp=document.getElementById('sourceHelp'),sourceLinkArea=document.getElementById('sourceLinkArea'),sourceUploadArea=document.getElementById('sourceUploadArea'),sourceUploadBtn=document.getElementById('sourceUploadBtn'),sourceFileInput=document.getElementById('sourceFileInput'),sourceSaved=document.getElementById('sourceSaved');
+let pendingPlatformUrl='';let selectedSourceType='drive';
 const downloadClip=document.getElementById('downloadClip'),clipPreview=document.getElementById('clipPreview'),previewPlaceholder=document.getElementById('previewPlaceholder'),scoreValue=document.getElementById('scoreValue'),resultText=document.getElementById('resultText');
 
 async function restoreSession(){
@@ -129,6 +153,51 @@ function showInline(message,show=true){
   inlineError.textContent=message;
   inlineError.style.display=show?'block':'none';
 }
+function sourceKey(platformUrl){
+  return 'norya_source_'+btoa(unescape(encodeURIComponent(platformUrl))).replace(/[^a-zA-Z0-9]/g,'').slice(0,80);
+}
+function getSavedSource(platformUrl){
+  try{return JSON.parse(localStorage.getItem(sourceKey(platformUrl))||'null')}catch{return null}
+}
+function saveSource(platformUrl,source){
+  try{localStorage.setItem(sourceKey(platformUrl),JSON.stringify(source))}catch{}
+}
+function openSourcePanel(platformUrl){
+  pendingPlatformUrl=platformUrl;
+  sourcePanel.classList.add('active');
+  sourceSaved.style.display='none';
+  const saved=getSavedSource(platformUrl);
+  if(saved?.url){
+    sourceUrlInput.value=saved.url;
+    selectedSourceType=saved.type||'direct';
+    document.querySelectorAll('.sourceTab').forEach(b=>b.classList.toggle('active',b.dataset.source===selectedSourceType));
+    updateSourceMode();
+    sourceSaved.style.display='block';
+  }
+}
+function closeSourcePanel(){
+  sourcePanel.classList.remove('active');
+  pendingPlatformUrl='';
+}
+function updateSourceMode(){
+  const isUpload=selectedSourceType==='upload';
+  sourceLinkArea.style.display=isUpload?'none':'block';
+  sourceUploadArea.style.display=isUpload?'block':'none';
+  const map={
+    drive:'No Google Drive, deixe o arquivo como “qualquer pessoa com o link”.',
+    dropbox:'Cole o link de compartilhamento do Dropbox. A Norya converte para download direto.',
+    direct:'Use uma URL que entregue o arquivo de vídeo diretamente, como .mp4, .mov ou .webm.',
+    upload:'Selecione o arquivo original/autorizado no seu computador.'
+  };
+  sourceHelp.textContent=map[selectedSourceType]||'';
+}
+document.querySelectorAll('.sourceTab').forEach(btn=>{
+  btn.onclick=()=>{
+    selectedSourceType=btn.dataset.source;
+    document.querySelectorAll('.sourceTab').forEach(b=>b.classList.toggle('active',b===btn));
+    updateSourceMode();
+  };
+});
 function blockedPlatform(v){
   try{
     const h=new URL(v).hostname.toLowerCase();
@@ -156,7 +225,14 @@ async function generateClip(v){
   showInline('',false);
   const platform=blockedPlatform(v);
   if(platform){
-    showInline('Link do '+platform+' reconhecido. Para processar conteúdo autorizado nesta beta, envie o arquivo original do vídeo abaixo.');
+    const saved=getSavedSource(v);
+    if(saved?.url){
+      openSourcePanel(v);
+      sourceSaved.style.display='block';
+      return generateLinkedClip(v,saved.url);
+    }
+    openSourcePanel(v);
+    showInline('Link do '+platform+' reconhecido. Vincule abaixo a fonte original/autorizada do vídeo.',true);
     return;
   }
   analyze.disabled=true;analyze.textContent='PROCESSANDO...';
@@ -172,7 +248,27 @@ async function generateClip(v){
     analyze.disabled=false;analyze.textContent='ANALISAR →';
   }
 }
-async function uploadVideo(file){
+async function generateLinkedClip(platformUrl,sourceUrl){
+  showInline('',false);
+  analyze.disabled=true;useSourceBtn.disabled=true;analyze.textContent='PROCESSANDO...';
+  const timer=startProgress('Validando fonte original...');
+  try{
+    const res=await fetch(API+'/api/clip',{
+      method:'POST',
+      headers:{'Content-Type':'application/json',Authorization:'Bearer '+authToken},
+      body:JSON.stringify({platformUrl,sourceUrl})
+    });
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok) throw new Error(data.error||'Não foi possível gerar a clipada.');
+    clearInterval(timer);finishResult(data);
+    sourceSaved.style.display='block';
+  }catch(e){
+    clearInterval(timer);status.style.display='none';showInline(e.message||'Não foi possível usar essa fonte.');
+  }finally{
+    analyze.disabled=false;useSourceBtn.disabled=false;analyze.textContent='ANALISAR →';
+  }
+}
+async function uploadVideo(file,platformUrl=''){
   if(!file) return;
   if(file.size>200*1024*1024){showInline('O arquivo excede 200 MB nesta beta.');return}
   openDashboard();showInline('',false);
@@ -180,6 +276,7 @@ async function uploadVideo(file){
   analyze.disabled=true;dashUploadBtn.disabled=true;
   try{
     const fd=new FormData();fd.append('video',file);
+    if(platformUrl) fd.append('platformUrl',platformUrl);
     const res=await fetch(API+'/api/upload',{method:'POST',headers:{Authorization:'Bearer '+authToken},body:fd});
     const data=await res.json().catch(()=>({}));
     if(!res.ok) throw new Error(data.error||'Não foi possível processar o arquivo.');
@@ -193,11 +290,6 @@ async function uploadVideo(file){
 homeAnalyze.onclick=()=>{
   const v=homeUrl.value.trim();
   if(!v){showHomeMessage('Cole um link para começar.',true,false);homeUrl.focus();return}
-  const platform=blockedPlatform(v);
-  if(platform){
-    showHomeMessage('Link do '+platform+' reconhecido. Para gerar a clipada com conteúdo autorizado, envie o arquivo original do vídeo.',true,true);
-    return;
-  }
   homeMsg.style.display='none';videoUrl.value=v;openDashboard();setTimeout(()=>generateClip(v),200);
 };
 homeUrl.addEventListener('keydown',e=>{if(e.key==='Enter')homeAnalyze.click()});
@@ -208,10 +300,24 @@ analyze.onclick=()=>{
 };
 homeUploadBtn.onclick=()=>homeFileInput.click();
 dashUploadBtn.onclick=()=>dashFileInput.click();
+sourceUploadBtn.onclick=()=>sourceFileInput.click();
+useSourceBtn.onclick=()=>{
+  const sourceUrl=sourceUrlInput.value.trim();
+  if(!pendingPlatformUrl){showInline('Cole primeiro o link do YouTube.');return}
+  if(!sourceUrl){showInline('Cole o link público da fonte original.');sourceUrlInput.focus();return}
+  saveSource(pendingPlatformUrl,{type:selectedSourceType,url:sourceUrl});
+  sourceSaved.style.display='block';
+  generateLinkedClip(pendingPlatformUrl,sourceUrl);
+};
+sourceUrlInput.addEventListener('keydown',e=>{if(e.key==='Enter')useSourceBtn.click()});
 homeFileInput.onchange=()=>uploadVideo(homeFileInput.files[0]);
 dashFileInput.onchange=()=>uploadVideo(dashFileInput.files[0]);
+sourceFileInput.onchange=()=>{
+  const file=sourceFileInput.files[0];
+  if(file&&pendingPlatformUrl) uploadVideo(file,pendingPlatformUrl);
+};
 document.getElementById('again').onclick=()=>{
-  result.style.display='none';showInline('',false);
+  result.style.display='none';showInline('',false);closeSourcePanel();
   clipPreview.pause();clipPreview.removeAttribute('src');clipPreview.load();clipPreview.style.display='none';previewPlaceholder.style.display='inline';videoUrl.value='';videoUrl.focus();
 };
 </script>
