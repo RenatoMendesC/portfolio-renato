@@ -90,6 +90,27 @@ function privateIP(ip){
   }
   return privateIPv4(ip);
 }
+function normalizeExternalSource(raw){
+  let u;
+  try{u=new URL(raw)}catch{return raw}
+  const host=u.hostname.toLowerCase();
+
+  if(host==='drive.google.com'){
+    const byPath=u.pathname.match(/\/file\/d\/([^/]+)/);
+    const byQuery=u.searchParams.get('id');
+    const id=byPath?.[1]||byQuery;
+    if(id) return 'https://drive.usercontent.google.com/download?id='+encodeURIComponent(id)+'&export=download&confirm=t';
+  }
+
+  if(host==='www.dropbox.com'||host==='dropbox.com'){
+    u.searchParams.set('dl','1');
+    u.searchParams.delete('raw');
+    return u.toString();
+  }
+
+  return raw;
+}
+
 async function validateUrl(raw){
   let u;
   try{u=new URL(raw)}catch{throw new Error('Link inválido.')}
@@ -121,6 +142,7 @@ async function safeFetch(raw,maxRedirects=4){
   throw new Error('Muitos redirecionamentos.');
 }
 async function downloadVideo(url,dest){
+  url=normalizeExternalSource(url);
   const res=await safeFetch(url);
   const len=Number(res.headers.get('content-length')||0);
   const type=(res.headers.get('content-type')||'').toLowerCase();
@@ -159,21 +181,32 @@ app.get('/api/auth/me',requireAuth,(req,res)=>{
 });
 app.post('/api/clip',requireAuth,async(req,res)=>{
   if(busy) return res.status(429).json({error:'A beta está processando outro vídeo. Tente novamente em instantes.'});
-  const url=String(req.body?.url||'').trim();
-  if(!url) return res.status(400).json({error:'Cole um link de vídeo.'});
+  const platformUrl=String(req.body?.platformUrl||'').trim();
+  const sourceUrl=String(req.body?.sourceUrl||req.body?.url||'').trim();
+  if(!sourceUrl) return res.status(400).json({error:'Informe a fonte original do vídeo.'});
   busy=true;
   await fs.mkdir(CLIPS,{recursive:true});
   const id=crypto.randomUUID();
   const input=path.join(WORK,id+'-input');
   const output=path.join(CLIPS,id+'.mp4');
   try{
-    await downloadVideo(url,input);
+    await downloadVideo(sourceUrl,input);
     await runFfmpeg(input,output);
     await fs.rm(input,{force:true});
     const proto=req.get('x-forwarded-proto')||req.protocol;
     const downloadUrl=proto+'://'+req.get('host')+'/clips/'+id+'.mp4';
     setTimeout(()=>fs.rm(output,{force:true}).catch(()=>{}),20*60*1000).unref();
-    res.json({ok:true,downloadUrl,durationSeconds:30,format:'720x1280',score:92,note:'Beta: recorte dos primeiros 30 segundos. A seleção inteligente de momento entra na próxima etapa.'});
+    res.json({
+      ok:true,
+      downloadUrl,
+      durationSeconds:30,
+      format:'720x1280',
+      score:92,
+      platformUrl:platformUrl||null,
+      note:platformUrl
+        ? 'Fonte original vinculada ao vídeo do YouTube. Beta: nesta etapa a Norya usa os primeiros 30 segundos para validar a renderização.'
+        : 'Beta: recorte dos primeiros 30 segundos. A seleção inteligente de momento entra na próxima etapa.'
+    });
   }catch(e){
     await fs.rm(input,{force:true}).catch(()=>{});
     await fs.rm(output,{force:true}).catch(()=>{});
