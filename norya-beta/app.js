@@ -82,14 +82,15 @@ loginForm.addEventListener('submit',async e=>{
 });
 $('logoutBtn').onclick=()=>{localStorage.removeItem('norya_token');location.reload()};
 
-document.querySelectorAll('.nav-item').forEach(btn=>btn.addEventListener('click',()=>{
-  document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active',b===btn));
+document.querySelectorAll('.nav-item,.mobile-nav-item').forEach(btn=>btn.addEventListener('click',()=>{
   const name=btn.dataset.section;
+  document.querySelectorAll('.nav-item,.mobile-nav-item').forEach(b=>b.classList.toggle('active',b.dataset.section===name));
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+name));
   const titles={generator:'Gerar clipadas',history:'Histórico',plans:'Planos',settings:'Configurações'};
   pageTitle.textContent=titles[name]||'Norya IA';
   if(name==='history')renderHistory();
   if(name==='settings')checkBridge();
+  if(innerWidth<=560)window.scrollTo({top:0,behavior:'smooth'});
 }));
 document.querySelectorAll('[data-nav]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();document.querySelector('[data-section="generator"]').click()}));
 
@@ -190,9 +191,16 @@ async function pollJob(id){
       }else if(j.status==='error'){
         clearInterval(pollTimer);generateBtn.disabled=false;uploadBtn.disabled=false;
         if(j.errorCode==='YOUTUBE_BLOCKED'){
+          const mobile=matchMedia('(max-width: 700px)').matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
           bridgeCallout.style.display='flex';
-          showMessage('O YouTube bloqueou o servidor cloud. Instale o Norya Link Engine uma vez e depois continue só colando links.','error');
-          checkBridge();
+          if(mobile){
+            bridgeCallout.innerHTML='<div><span class="eyebrow">YOUTUBE BLOQUEOU A NUVEM</span><h4>Continue pelo celular</h4><p>O app está funcionando no mobile. Para este vídeo específico, selecione o arquivo original no celular e a Norya continua a análise automaticamente.</p></div><button class="secondary" id="mobileUploadFallback" type="button">ENVIAR VÍDEO</button>';
+            setTimeout(()=>{const b=document.getElementById('mobileUploadFallback');if(b)b.onclick=()=>uploadInput.click()},0);
+            showMessage('O YouTube bloqueou a importação cloud deste link. No celular, envie o arquivo original para continuar.','error');
+          }else{
+            showMessage('O YouTube bloqueou o servidor cloud. Ative o Norya Link Engine e depois continue só colando links.','error');
+            checkBridge();
+          }
         }else showMessage(j.error||'Falha no processamento.','error');
       }
     }catch(e){
@@ -238,6 +246,14 @@ function renderHistory(){
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 
 async function checkBridge(){
+  const mobile=matchMedia('(max-width: 700px)').matches||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if(mobile){
+    bridgeOnline=false;
+    updateBridgeUI(false);
+    if(bridgeMiniText)bridgeMiniText.textContent='desktop opcional';
+    if(bridgeStatus?.querySelector('span'))bridgeStatus.querySelector('span').textContent='Link Engine disponível no Windows';
+    return;
+  }
   const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),900);
   try{
     const r=await fetch(BRIDGE+'/health',{signal:ctrl.signal,cache:'no-store'});
@@ -254,24 +270,20 @@ function updateBridgeUI(ok){
 }
 setInterval(checkBridge,15000);
 
-// Motion system
-const root=document.documentElement,glow=$('cursorGlow'),ring=$('cursorRing'),dot=$('cursorDot');
-let targetX=innerWidth/2,targetY=innerHeight/2,ringX=targetX,ringY=targetY,glowX=targetX,glowY=targetY,lastTrail=0;
+// Motion system — soft cloud follows the pointer, with no ring or dot
+const root=document.documentElement,glow=$('cursorGlow');
+let targetX=innerWidth/2,targetY=innerHeight/2,glowX=targetX,glowY=targetY;
 addEventListener('mousemove',e=>{
   targetX=e.clientX;targetY=e.clientY;
   root.style.setProperty('--mx',targetX+'px');root.style.setProperty('--my',targetY+'px');
   root.style.setProperty('--mxn',targetX/innerWidth);root.style.setProperty('--myn',targetY/innerHeight);
-  dot.style.transform=`translate3d(${targetX-2.5}px,${targetY-2.5}px,0)`;
-  const hover=!!e.target.closest('button,a,input,select,.tilt');ring.classList.toggle('hover',hover);
-  if(performance.now()-lastTrail>42&&matchMedia('(pointer:fine)').matches){
-    lastTrail=performance.now();const p=document.createElement('i');p.className='trail';p.style.left=targetX+'px';p.style.top=targetY+'px';document.body.appendChild(p);setTimeout(()=>p.remove(),600);
-  }
 });
-(function animateCursor(){
-  ringX+=(targetX-ringX)*.2;ringY+=(targetY-ringY)*.2;glowX+=(targetX-glowX)*.075;glowY+=(targetY-glowY)*.075;
-  ring.style.transform=`translate3d(${ringX-ring.offsetWidth/2}px,${ringY-ring.offsetHeight/2}px,0)`;
-  glow.style.transform=`translate3d(${glowX-170}px,${glowY-170}px,0)`;
-  requestAnimationFrame(animateCursor);
+(function animateGlow(){
+  if(glow&&matchMedia('(pointer:fine)').matches){
+    glowX+=(targetX-glowX)*.065;glowY+=(targetY-glowY)*.065;
+    glow.style.transform=`translate3d(${glowX-280}px,${glowY-190}px,0)`;
+  }
+  requestAnimationFrame(animateGlow);
 })();
 
 function bindTilt(){
@@ -299,19 +311,5 @@ function bindMagnetic(){
   });
 }
 bindTilt();bindMagnetic();
-
-const canvas=$('motionCanvas'),ctx=canvas.getContext('2d');let particles=[];
-function resizeCanvas(){canvas.width=innerWidth*devicePixelRatio;canvas.height=innerHeight*devicePixelRatio;canvas.style.width=innerWidth+'px';canvas.style.height=innerHeight+'px';ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}
-function seed(){particles=Array.from({length:Math.min(55,Math.floor(innerWidth/22))},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.16,vy:(Math.random()-.5)*.16,r:Math.random()*1.2+.3}))}
-function draw(){
-  ctx.clearRect(0,0,innerWidth,innerHeight);
-  for(const p of particles){
-    p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=innerWidth;if(p.x>innerWidth)p.x=0;if(p.y<0)p.y=innerHeight;if(p.y>innerHeight)p.y=0;
-    const dx=p.x-targetX,dy=p.y-targetY,dist=Math.hypot(dx,dy);if(dist<160){p.x+=dx/(dist||1)*.18;p.y+=dy/(dist||1)*.18}
-    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(184,255,61,.25)';ctx.fill();
-  }
-  requestAnimationFrame(draw);
-}
-addEventListener('resize',()=>{resizeCanvas();seed()});resizeCanvas();seed();draw();
 
 resetStatus();restoreSession();
