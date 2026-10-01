@@ -10,9 +10,6 @@
 </head>
 <body>
   <div class="cursor-glow" id="cursorGlow"></div>
-  <div class="cursor-ring" id="cursorRing"></div>
-  <div class="cursor-dot" id="cursorDot"></div>
-  <canvas id="motionCanvas" aria-hidden="true"></canvas>
 
   <section class="login-view" id="loginView">
     <div class="login-hero">
@@ -66,6 +63,16 @@
   </section>
 
   <div class="app-view" id="appView">
+    <header class="mobile-header">
+      <a class="brand" href="#" data-nav="generator">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M14 49V15h9l18 22V15h9v34h-9L23 27v22z" fill="currentColor"/>
+          <path d="M45 8l11 7-11 7z" fill="#b8ff3d"/>
+        </svg>
+        <span>NORYA <b>IA</b></span>
+      </a>
+      <div class="mobile-plan">MASTER ∞</div>
+    </header>
     <aside class="sidebar">
       <a class="brand" href="#" data-nav="generator">
         <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
@@ -298,6 +305,13 @@
         </div>
       </section>
     </main>
+
+    <nav class="mobile-nav" aria-label="Navegação móvel">
+      <button class="mobile-nav-item active" data-section="generator"><span>⌂</span><b>Início</b></button>
+      <button class="mobile-nav-item" data-section="history"><span>◫</span><b>Projetos</b></button>
+      <button class="mobile-nav-item" data-section="plans"><span>▶</span><b>Clipadas</b></button>
+      <button class="mobile-nav-item" data-section="settings"><span>⚙</span><b>Ajustes</b></button>
+    </nav>
   </div>
 
   <script src="./app.js"></script>
