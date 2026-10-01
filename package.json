@@ -1,18 +1,17 @@
 {
-  "name": "norya-ia-beta-api",
-  "version": "0.1.0",
+  "name": "norya-ia-production",
+  "version": "1.0.0",
   "private": true,
   "type": "commonjs",
-  "engines": {
-    "node": ">=20"
-  },
-  "scripts": {
-    "start": "node server.js"
-  },
+  "engines": {"node": ">=20"},
+  "scripts": {"start": "node server.js"},
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
     "ffmpeg-static": "^5.2.0",
+    "ffprobe-static": "^3.1.0",
+    "helmet": "^8.1.0",
     "multer": "^2.0.2",
     "youtube-dl-exec": "^3.1.15"
   }
