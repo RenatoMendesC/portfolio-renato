@@ -2,6 +2,7 @@ const express=require('express');
 const cors=require('cors');
 const ffmpeg=require('ffmpeg-static');
 const multer=require('multer');
+const youtubedl=require('youtube-dl-exec');
 const {spawn}=require('child_process');
 const {promises:fs}=require('fs');
 const fss=require('fs');
@@ -76,7 +77,7 @@ app.use(cors({origin:'*'}));
 app.use(express.json({limit:'32kb'}));
 app.use('/clips',express.static(CLIPS,{maxAge:0,fallthrough:false}));
 
-const blockedHosts=['youtube.com','www.youtube.com','m.youtube.com','youtu.be','tiktok.com','www.tiktok.com','instagram.com','www.instagram.com'];
+const blockedHosts=['tiktok.com','www.tiktok.com','instagram.com','www.instagram.com'];
 
 function detectPlatform(raw){
   let u;
@@ -151,6 +152,39 @@ async function safeFetch(raw,maxRedirects=4){
   }
   throw new Error('Muitos redirecionamentos.');
 }
+async function downloadYoutube(url,dest){
+  const platform=detectPlatform(url);
+  if(platform!=='YouTube') throw new Error('URL do YouTube inválida.');
+  try{
+    await youtubedl(url,{
+      noPlaylist:true,
+      noWarnings:true,
+      format:'best[ext=mp4][height<=720]/best[height<=720]',
+      output:dest,
+      forceOverwrites:true,
+      maxFilesize:'200M',
+      socketTimeout:30,
+      retries:2
+    },{timeout:180000});
+    const stat=await fs.stat(dest);
+    if(!stat.size) throw new Error('O YouTube não retornou um arquivo de vídeo.');
+    if(stat.size>MAX_BYTES){
+      await fs.rm(dest,{force:true}).catch(()=>{});
+      throw new Error('O vídeo excede 200 MB nesta beta.');
+    }
+  }catch(e){
+    await fs.rm(dest,{force:true}).catch(()=>{});
+    const msg=String(e?.stderr||e?.message||e);
+    if(/sign in|confirm you.re not a bot|bot/i.test(msg)){
+      throw new Error('O YouTube bloqueou a importação automática deste vídeo. Use a fonte alternativa.');
+    }
+    if(/private|members.only|age.restricted|unavailable/i.test(msg)){
+      throw new Error('Este vídeo não está disponível para importação automática.');
+    }
+    throw new Error('Não consegui importar este vídeo do YouTube agora. Tente outro link ou use a fonte alternativa.');
+  }
+}
+
 async function downloadVideo(url,dest){
   url=normalizeExternalSource(url);
   const res=await safeFetch(url);
@@ -197,7 +231,10 @@ app.post('/api/clip',requireAuth,async(req,res)=>{
   if(!sourceUrl) return res.status(400).json({error:'Informe a fonte original do vídeo.'});
 
   const detected=detectPlatform(sourceUrl);
-  if(detected && !req.body?.sourceUrl){
+  if(detected==='YouTube' && !req.body?.sourceUrl && req.body?.rightsConfirmed!==true){
+    return res.status(400).json({error:'Confirme que você possui ou tem autorização para processar este conteúdo.'});
+  }
+  if((detected==='TikTok'||detected==='Instagram') && !req.body?.sourceUrl){
     return res.status(409).json({
       needsSource:true,
       platform:detected,
@@ -212,7 +249,8 @@ app.post('/api/clip',requireAuth,async(req,res)=>{
   const input=path.join(WORK,id+'-input');
   const output=path.join(CLIPS,id+'.mp4');
   try{
-    await downloadVideo(sourceUrl,input);
+    if(detected==='YouTube' && !req.body?.sourceUrl) await downloadYoutube(sourceUrl,input);
+    else await downloadVideo(sourceUrl,input);
     await runFfmpeg(input,output);
     await fs.rm(input,{force:true});
     const proto=req.get('x-forwarded-proto')||req.protocol;
@@ -225,9 +263,11 @@ app.post('/api/clip',requireAuth,async(req,res)=>{
       format:'720x1280',
       score:92,
       platformUrl:platformUrl||null,
-      note:platformUrl
-        ? 'Fonte original vinculada ao vídeo do YouTube. Beta: nesta etapa a Norya usa os primeiros 30 segundos para validar a renderização.'
-        : 'Beta: recorte dos primeiros 30 segundos. A seleção inteligente de momento entra na próxima etapa.'
+      note:detected==='YouTube' && !req.body?.sourceUrl
+        ? 'Vídeo importado diretamente do YouTube e convertido para 9:16. Beta: nesta etapa a Norya usa os primeiros 30 segundos para validar o motor.'
+        : platformUrl
+          ? 'Fonte original vinculada ao vídeo. Beta: nesta etapa a Norya usa os primeiros 30 segundos para validar a renderização.'
+          : 'Beta: recorte dos primeiros 30 segundos. A seleção inteligente de momento entra na próxima etapa.'
     });
   }catch(e){
     await fs.rm(input,{force:true}).catch(()=>{});
