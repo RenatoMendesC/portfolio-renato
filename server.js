@@ -288,6 +288,11 @@ async function downloadYoutubeProvider(url,dest){
         lastError=e;
         console.error('[NORYA_IMPORT]',provider.name,'failed at',quality+':',e.message);
         await fs.rm(dest,{force:true}).catch(()=>{});
+        if(/monthly usage hard limit exceeded|usage limit|quota/i.test(String(e.message||''))){
+          const quotaErr=new Error('Import provider quota exhausted.');
+          quotaErr.code='PROVIDER_QUOTA_EXHAUSTED';
+          throw quotaErr;
+        }
         await new Promise(r=>setTimeout(r,900));
       }
     }
@@ -323,10 +328,16 @@ async function downloadYoutube(url,dest){
     const msg=String(e?.stderr||e?.message||e);
     if(providerError) console.error('[NORYA_IMPORT] Provider failed:',providerError.message);
     console.error('[NORYA_IMPORT] Direct importer failed:',msg.slice(0,700));
-    const err=new Error(/private|members.only|unavailable/i.test(msg)
-      ? 'Este vídeo não está disponível para processamento.'
-      : 'Não foi possível importar este vídeo automaticamente.');
-    err.code=/private|members.only|unavailable/i.test(msg)?'SOURCE_UNAVAILABLE':'IMPORT_UNAVAILABLE';
+    let err;
+    if(providerError?.code==='PROVIDER_QUOTA_EXHAUSTED'){
+      err=new Error('O importador de links está temporariamente indisponível.');
+      err.code='PROVIDER_QUOTA_EXHAUSTED';
+    }else{
+      err=new Error(/private|members.only|unavailable/i.test(msg)
+        ? 'Este vídeo não está disponível para processamento.'
+        : 'Não foi possível importar este vídeo automaticamente.');
+      err.code=/private|members.only|unavailable/i.test(msg)?'SOURCE_UNAVAILABLE':'IMPORT_UNAVAILABLE';
+    }
     if(providerError) err.providerFallbackTried=true;
     throw err;
   }
