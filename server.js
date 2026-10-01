@@ -28,6 +28,7 @@ const jobs=new Map();
 const MASTER_EMAIL=(process.env.MASTER_EMAIL||'').trim().toLowerCase();
 const MASTER_PASSWORD_HASH=(process.env.MASTER_PASSWORD_HASH||'').trim().toLowerCase();
 const MASTER_PASSWORD_SALT=(process.env.MASTER_PASSWORD_SALT||'').trim().toLowerCase();
+const MASTER_PASSWORD=process.env.MASTER_PASSWORD||'';
 const SESSION_SECRET=process.env.SESSION_SECRET||'';
 
 for(const dir of [WORK,INPUTS,CLIPS]){try{fss.mkdirSync(dir,{recursive:true})}catch{}}
@@ -66,11 +67,13 @@ function secureEqual(a,b){
   return crypto.timingSafeEqual(x,y);
 }
 function passwordMatches(raw){
-  if(!MASTER_PASSWORD_HASH||!MASTER_PASSWORD_SALT) return false;
-  try{
-    const actual=crypto.scryptSync(String(raw),Buffer.from(MASTER_PASSWORD_SALT,'hex'),64,{N:16384,r:8,p:1}).toString('hex');
-    return secureEqual(actual,MASTER_PASSWORD_HASH);
-  }catch{return false}
+  if(MASTER_PASSWORD_HASH&&MASTER_PASSWORD_SALT){
+    try{
+      const actual=crypto.scryptSync(String(raw),Buffer.from(MASTER_PASSWORD_SALT,'hex'),64,{N:16384,r:8,p:1}).toString('hex');
+      return secureEqual(actual,MASTER_PASSWORD_HASH);
+    }catch{}
+  }
+  return !!MASTER_PASSWORD && secureEqual(String(raw),MASTER_PASSWORD);
 }
 function requireAuth(req,res,next){
   const raw=req.headers.authorization||'';
@@ -294,10 +297,10 @@ async function processJob(job){
   }
 }
 
-app.get('/health',(req,res)=>res.json({ok:true,version:'1.0.0',engine:'Norya Momentum Engine',authConfigured:!!(MASTER_EMAIL&&MASTER_PASSWORD_HASH&&MASTER_PASSWORD_SALT&&SESSION_SECRET)}));
+app.get('/health',(req,res)=>res.json({ok:true,version:'1.0.0',engine:'Norya Momentum Engine',authConfigured:!!(MASTER_EMAIL&&(MASTER_PASSWORD||(MASTER_PASSWORD_HASH&&MASTER_PASSWORD_SALT))&&SESSION_SECRET)}));
 app.post('/api/auth/login',(req,res)=>{
   const email=String(req.body?.email||'').trim().toLowerCase(),password=String(req.body?.password||'');
-  if(!MASTER_EMAIL||!MASTER_PASSWORD_HASH||!MASTER_PASSWORD_SALT||!SESSION_SECRET) return res.status(503).json({error:'Acesso MASTER não configurado.'});
+  if(!MASTER_EMAIL||(!MASTER_PASSWORD&&!(MASTER_PASSWORD_HASH&&MASTER_PASSWORD_SALT))||!SESSION_SECRET) return res.status(503).json({error:'Acesso MASTER não configurado.'});
   if(!secureEqual(email,MASTER_EMAIL)||!passwordMatches(password)) return res.status(401).json({error:'E-mail ou senha inválidos.'});
   const user={name:'Renato',role:'OWNER',plan:'MASTER',unlimited:true};
   const token=signSession({...user,iat:Date.now(),exp:Date.now()+1000*60*60*24*7});
