@@ -19,6 +19,46 @@ const CLIPS=path.join(WORK,'clips');
 const UPLOADS=path.join(WORK,'uploads');
 const MAX_BYTES=200*1024*1024;
 let busy=false;
+const MASTER_EMAIL=(process.env.MASTER_EMAIL||'').trim().toLowerCase();
+const MASTER_PASSWORD=process.env.MASTER_PASSWORD||'';
+const SESSION_SECRET=process.env.SESSION_SECRET||'';
+
+function b64url(input){
+  return Buffer.from(input).toString('base64url');
+}
+function signSession(payload){
+  if(!SESSION_SECRET) throw new Error('SESSION_SECRET não configurado.');
+  const body=b64url(JSON.stringify(payload));
+  const sig=crypto.createHmac('sha256',SESSION_SECRET).update(body).digest('base64url');
+  return body+'.'+sig;
+}
+function verifySession(token){
+  if(!token||!SESSION_SECRET) return null;
+  const [body,sig]=String(token).split('.');
+  if(!body||!sig) return null;
+  const expected=crypto.createHmac('sha256',SESSION_SECRET).update(body).digest();
+  let provided;
+  try{provided=Buffer.from(sig,'base64url')}catch{return null}
+  if(expected.length!==provided.length||!crypto.timingSafeEqual(expected,provided)) return null;
+  try{
+    const payload=JSON.parse(Buffer.from(body,'base64url').toString('utf8'));
+    if(!payload.exp||Date.now()>payload.exp) return null;
+    return payload;
+  }catch{return null}
+}
+function safeCredentialEqual(a,b){
+  const ah=crypto.createHash('sha256').update(String(a)).digest();
+  const bh=crypto.createHash('sha256').update(String(b)).digest();
+  return crypto.timingSafeEqual(ah,bh);
+}
+function requireAuth(req,res,next){
+  const raw=req.headers.authorization||'';
+  const token=raw.startsWith('Bearer ')?raw.slice(7):'';
+  const user=verifySession(token);
+  if(!user) return res.status(401).json({error:'Sessão inválida ou expirada.'});
+  req.user=user;
+  next();
+}
 const upload=multer({
   storage:multer.diskStorage({
     destination:(req,file,cb)=>{try{fss.mkdirSync(UPLOADS,{recursive:true});cb(null,UPLOADS)}catch(e){cb(e)}},
@@ -100,8 +140,24 @@ function runFfmpeg(input,output){
     p.on('close',code=>code===0?resolve():reject(new Error(err||'Falha no FFmpeg.')));
   });
 }
-app.get('/health',(req,res)=>res.json({ok:true,service:'norya-ia-beta-api',ffmpeg:!!ffmpeg}));
-app.post('/api/clip',async(req,res)=>{
+app.get('/health',(req,res)=>res.json({ok:true,service:'norya-ia-beta-api',ffmpeg:!!ffmpeg,authConfigured:!!(MASTER_EMAIL&&MASTER_PASSWORD&&SESSION_SECRET)}));
+
+app.post('/api/auth/login',(req,res)=>{
+  const email=String(req.body?.email||'').trim().toLowerCase();
+  const password=String(req.body?.password||'');
+  if(!MASTER_EMAIL||!MASTER_PASSWORD||!SESSION_SECRET) return res.status(503).json({error:'Login MASTER ainda não configurado.'});
+  if(!safeCredentialEqual(email,MASTER_EMAIL)||!safeCredentialEqual(password,MASTER_PASSWORD)){
+    return res.status(401).json({error:'E-mail ou senha inválidos.'});
+  }
+  const user={name:'MASTER',role:'OWNER',plan:'MASTER',unlimited:true};
+  const token=signSession({...user,iat:Date.now(),exp:Date.now()+1000*60*60*24*7});
+  res.json({ok:true,token,user});
+});
+
+app.get('/api/auth/me',requireAuth,(req,res)=>{
+  res.json({ok:true,user:{name:req.user.name,role:req.user.role,plan:req.user.plan,unlimited:!!req.user.unlimited}});
+});
+app.post('/api/clip',requireAuth,async(req,res)=>{
   if(busy) return res.status(429).json({error:'A beta está processando outro vídeo. Tente novamente em instantes.'});
   const url=String(req.body?.url||'').trim();
   if(!url) return res.status(400).json({error:'Cole um link de vídeo.'});
@@ -125,7 +181,7 @@ app.post('/api/clip',async(req,res)=>{
   }finally{busy=false;}
 });
 
-app.post('/api/upload',upload.single('video'),async(req,res)=>{
+app.post('/api/upload',requireAuth,upload.single('video'),async(req,res)=>{
   if(busy){
     if(req.file?.path) await fs.rm(req.file.path,{force:true}).catch(()=>{});
     return res.status(429).json({error:'A beta está processando outro vídeo. Tente novamente em instantes.'});
