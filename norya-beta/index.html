@@ -7,13 +7,38 @@
 <title>Norya IA — Beta</title>
 <style>
 :root{--bg:#050706;--panel:#0a0e0b;--line:#1c281f;--green:#b8ff3d;--muted:#7d877f;--text:#f4f7f4}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 70% 5%,rgba(184,255,61,.08),transparent 28%),var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 70% 5%,rgba(184,255,61,.08),transparent 28%),var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif}.loginScreen{min-height:100vh;display:grid;grid-template-columns:1.1fr .9fr;align-items:stretch;background:radial-gradient(circle at 28% 30%,rgba(184,255,61,.10),transparent 28%),#030504}.loginHero{padding:64px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}.loginHero:after{content:"";position:absolute;inset:auto -80px -120px 15%;height:260px;background:radial-gradient(circle,rgba(184,255,61,.20),transparent 65%);filter:blur(18px)}.loginHero h1{font-size:clamp(52px,7vw,92px);margin:18px 0 22px}.loginHero p{max-width:620px;color:#9aa39c;font-size:18px;line-height:1.65}.loginFeatures{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:34px;max-width:760px}.loginFeature{border:1px solid #263329;background:#070b08;padding:18px}.loginFeature b{display:block;margin-bottom:7px}.loginPanel{display:flex;align-items:center;justify-content:center;padding:34px}.loginCard{width:min(520px,100%);border:1px solid #487033;background:linear-gradient(180deg,rgba(16,26,17,.96),rgba(5,8,6,.98));padding:42px;box-shadow:0 0 50px rgba(184,255,61,.08)}.loginBrand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:22px;margin-bottom:30px}.loginMark{width:54px;height:54px;border:1px solid #5f8f3d;display:grid;place-items:center;font-size:24px;color:var(--green);box-shadow:0 0 26px rgba(184,255,61,.15)}.loginCard h2{font-size:34px;margin:0 0 8px}.loginCard>p{color:#88928a;margin:0 0 28px}.field{display:grid;gap:8px;margin:16px 0}.field label{font-weight:700;font-size:13px}.field input{height:56px;border:1px solid #334238;background:#080c09;color:#fff;padding:0 14px;outline:0;font-size:15px}.field input:focus{border-color:#6f9a49}.loginError{display:none;border:1px solid #5d2727;background:#120909;color:#ffb3b3;padding:12px 14px;margin-top:12px;font-size:12px}.loginMeta{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:18px 0 0;color:#879188;font-size:11px}.masterPill{border:1px solid #5c813e;color:var(--green);padding:8px 10px;font:11px Consolas,monospace}.appShell{display:none}
 a{color:inherit;text-decoration:none}.shell{width:min(1160px,calc(100% - 28px));margin:auto}.mono{font-family:Consolas,monospace}.green{color:var(--green)}
 header{height:78px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #141b16;position:sticky;top:0;background:rgba(5,7,6,.88);backdrop-filter:blur(14px);z-index:10}.logo{font-weight:900;letter-spacing:.07em;display:flex;align-items:center;gap:10px}.mark{width:34px;height:34px;border:1px solid #38502d;display:grid;place-items:center;color:var(--green);background:#0e160f;box-shadow:0 0 24px rgba(184,255,61,.08)}nav{display:flex;gap:22px;align-items:center;font-size:13px;color:#b7beb8}.btn{border:0;background:var(--green);color:#071006;padding:14px 18px;font-weight:900;cursor:pointer;letter-spacing:.03em}.ghost{background:#0b100c;color:#dce1dd;border:1px solid #29362c}.hero{padding:92px 0 62px}.eyebrow{font:11px Consolas,monospace;color:#8a948c;letter-spacing:.16em}.eyebrow span{color:var(--green)}h1{font-size:clamp(58px,8vw,108px);line-height:.88;letter-spacing:-.07em;margin:18px 0 28px;max-width:980px}.hero p{max-width:720px;color:#8f9991;font-size:18px;line-height:1.65}.actions{display:flex;gap:16px;align-items:center;margin-top:30px}.tag{font:10px Consolas,monospace;color:#839086;border:1px solid #203025;padding:10px 12px}.engine{margin-top:56px;border:1px solid var(--line);background:#080b09;padding:0;box-shadow:0 30px 90px rgba(0,0,0,.25)}.engineTop{height:45px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:7px;padding:0 14px;font:10px Consolas,monospace;color:#69736b}.dot{width:7px;height:7px;border-radius:50%;background:#283029}.engineTop b{margin-left:8px;color:#9ba49d}.online{margin-left:auto;color:var(--green)}.input{margin:20px;min-height:62px;border:1px solid #2a392d;background:#040605;display:flex;align-items:center;color:#5f6961;font:12px Consolas,monospace}.input input{flex:1;min-width:0;height:60px;border:0;outline:0;background:transparent;color:#fff;padding:0 18px;font:12px Consolas,monospace}.input input::placeholder{color:#59635c}.input button{margin-left:auto;margin-right:8px}.homeMsg{display:none;margin:0 20px 18px;padding:14px;border:1px solid #263528;background:#090d0a;font:11px Consolas,monospace;color:#91a094}.homeMsg.error{border-color:#5d2727;color:#ffb3b3}.uploadRow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}.fileHint{font:10px Consolas,monospace;color:#667168}.inlineError{display:none;margin-top:14px;padding:14px;border:1px solid #5d2727;background:#120909;color:#ffb3b3;font:11px Consolas,monospace}.metrics{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}.metric{padding:18px;border-right:1px solid var(--line);display:grid;gap:5px}.metric:last-child{border:0}.metric span{font:9px Consolas,monospace;color:#59635c}.metric b{font-size:12px}.section{padding:76px 0}.sectionHead{display:flex;gap:18px;align-items:flex-start;margin-bottom:26px}.sectionHead>span{font:11px Consolas,monospace;color:var(--green);padding-top:8px}.sectionHead small{font:10px Consolas,monospace;color:#667168}.sectionHead h2{font-size:42px;letter-spacing:-.045em;margin:8px 0}.steps,.pricing{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line)}.step{padding:30px;min-height:230px;border-right:1px solid var(--line);background:#080b09}.step:last-child{border:0}.step .n{font:10px Consolas,monospace;color:#657068}.step .icon{width:46px;height:46px;border:1px solid #2d422c;color:var(--green);display:grid;place-items:center;margin:40px 0 18px}.step h3{margin:0 0 10px}.step p{color:#79827b;font-size:13px;line-height:1.6}.pricing{grid-template-columns:repeat(4,1fr)}.price{padding:28px;min-height:370px;border-right:1px solid var(--line);background:#080b09;display:flex;flex-direction:column}.price:last-child{border:0}.price.featured{background:radial-gradient(circle at 50% 0,rgba(184,255,61,.12),transparent 30%),#0a0f0b}.price small{font:10px Consolas,monospace;color:#7b867d}.price h3{font-size:28px;margin:22px 0 4px}.price p{color:#687169;font-size:12px}.price ul{list-style:none;padding:0;margin:25px 0;display:grid;gap:12px;color:#aeb6b0;font-size:13px}.price li:before{content:"✓";color:var(--green);margin-right:9px}.price button{margin-top:auto}.beta{border:1px solid #2d3e31;background:linear-gradient(90deg,rgba(184,255,61,.08),transparent);padding:38px;display:flex;align-items:center;justify-content:space-between}.beta h2{font-size:34px;margin:8px 0}.dashboard{display:none;padding:36px 0 80px}.dashGrid{display:grid;grid-template-columns:220px 1fr;min-height:720px;border:1px solid var(--line);background:#080b09}.side{border-right:1px solid var(--line);padding:24px;display:flex;flex-direction:column}.side .menu{display:grid;gap:8px;margin-top:48px}.side button{background:transparent;border:1px solid transparent;color:#7f8981;text-align:left;padding:12px;cursor:pointer}.side button.active{border-color:#263528;background:#0c120d;color:var(--green)}.user{margin-top:auto;border-top:1px solid var(--line);padding-top:18px;font-size:12px}.main{padding:34px}.top{display:flex;justify-content:space-between;gap:20px}.usage{border:1px solid #253228;padding:12px 16px;display:flex;gap:10px;align-items:center}.usage strong{font:700 28px Consolas,monospace;color:var(--green)}.generator{margin-top:30px;border:1px solid var(--line);padding:28px;background:#070a08}.urlbox{margin-top:20px;border:1px solid #2b3a2d;display:flex;min-height:58px;background:#030504}.urlbox input{flex:1;background:transparent;border:0;outline:0;color:white;padding:0 16px}.status{margin-top:18px;display:none;border:1px solid #233128;padding:16px}.bar{height:4px;background:#152018;margin-top:12px}.bar i{display:block;width:0;height:100%;background:var(--green);transition:width .45s}.result{display:none;margin-top:22px;border:1px solid var(--line);padding:22px;grid-template-columns:1fr 220px;gap:28px}.phone{aspect-ratio:9/16;border:1px solid #2c3b2f;background:linear-gradient(180deg,#131a14,#020302);display:grid;place-items:center;color:#758078;text-align:center;padding:18px}.score{font:700 44px Consolas,monospace;color:var(--green)}footer{padding:38px 0 60px;border-top:1px solid #151b17;color:#5e675f;font-size:11px}.notice{position:fixed;right:18px;bottom:18px;border:1px solid #31452f;background:#0a100b;padding:12px 14px;font:10px Consolas,monospace;color:#9fac9f;z-index:20}
-@media(max-width:900px){nav a{display:none}.steps,.pricing{grid-template-columns:1fr 1fr}.dashGrid{grid-template-columns:1fr}.side{display:none}.metrics{grid-template-columns:1fr 1fr}.result{grid-template-columns:1fr}}@media(max-width:620px){h1{font-size:58px}.steps,.pricing{grid-template-columns:1fr}.actions,.beta,.top{align-items:flex-start;flex-direction:column}.input{display:grid;padding:12px}.input button{margin:12px 0 0;width:100%}.main{padding:18px}}
+@media(max-width:900px){.loginScreen{grid-template-columns:1fr}.loginHero{display:none}.loginPanel{min-height:100vh}.loginFeatures{grid-template-columns:1fr}.loginCard{padding:28px}nav a{display:none}.steps,.pricing{grid-template-columns:1fr 1fr}.dashGrid{grid-template-columns:1fr}.side{display:none}.metrics{grid-template-columns:1fr 1fr}.result{grid-template-columns:1fr}}@media(max-width:620px){h1{font-size:58px}.steps,.pricing{grid-template-columns:1fr}.actions,.beta,.top{align-items:flex-start;flex-direction:column}.input{display:grid;padding:12px}.input button{margin:12px 0 0;width:100%}.main{padding:18px}}
 </style>
 </head>
 <body>
+<section class="loginScreen" id="loginScreen">
+  <div class="loginHero">
+    <div class="eyebrow"><span>●</span> NORYA IA / CREATOR INTELLIGENCE</div>
+    <h1>Clipadas com IA para <span class="green">criadores reais.</span></h1>
+    <p>A Norya IA transforma vídeos longos em clipes verticais prontos para Shorts, Reels e TikTok, com análise, renderização 9:16 e fluxo rápido de publicação.</p>
+    <div class="loginFeatures">
+      <div class="loginFeature"><b class="green">✦ IA de clipadas</b><span>Encontre momentos fortes com menos trabalho.</span></div>
+      <div class="loginFeature"><b class="green">▣ 9:16 automático</b><span>Saída pronta para redes sociais.</span></div>
+      <div class="loginFeature"><b class="green">∞ MASTER</b><span>Acesso ilimitado para sua conta proprietária.</span></div>
+    </div>
+  </div>
+  <div class="loginPanel">
+    <div class="loginCard">
+      <div class="loginBrand"><span class="loginMark">N</span><span>NORYA <span class="green">IA</span></span></div>
+      <h2>Entrar na Norya IA</h2>
+      <p>Acesse sua conta para gerar clipadas com IA.</p>
+      <div class="field"><label for="loginEmail">E-mail</label><input id="loginEmail" type="email" autocomplete="username" placeholder="seu@email.com"></div>
+      <div class="field"><label for="loginPassword">Senha</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Digite sua senha"></div>
+      <div class="loginError" id="loginError"></div>
+      <button class="btn" id="loginBtn" style="width:100%;margin-top:18px">ENTRAR →</button>
+      <div class="loginMeta"><span class="masterPill">♛ MASTER / OWNER</span><span>Sem limite de clipadas</span></div>
+    </div>
+  </div>
+</section>
+<div class="appShell" id="appShell">
 <header><div class="shell" style="display:flex;align-items:center;justify-content:space-between;width:min(1160px,calc(100% - 28px))">
 <a class="logo" href="#" data-home><span class="mark">N</span>NORYA <span class="green">IA</span></a>
 <nav><a href="#como">Como funciona</a><a href="#planos">Planos</a><button class="ghost btn" data-demo>Testar dashboard</button><button class="btn" data-demo>Começar grátis</button></nav>
@@ -26,24 +51,67 @@ header{height:78px;display:flex;align-items:center;justify-content:space-between
 <article class="price"><small>FREE</small><h3>Grátis</h3><p>Para testar a Norya</p><ul><li>1 clipe por dia</li><li>Até 15 min por vídeo</li><li>720p</li><li>Marca d'água Norya</li></ul><button class="ghost btn" data-demo>Começar grátis</button></article>
 <article class="price"><small>CREATOR</small><h3>R$ 29,90</h3><p>/ mês</p><ul><li>60 clipes por mês</li><li>Até 60 min por vídeo</li><li>1080p</li><li>Sem marca d'água</li></ul><button class="ghost btn">Em breve</button></article>
 <article class="price featured"><small>PRO</small><h3>R$ 59,90</h3><p>/ mês</p><ul><li>200 clipes por mês</li><li>Até 3h por vídeo</li><li>1080p</li><li>Fila prioritária</li></ul><button class="btn">Em breve</button></article>
-<article class="price"><small>STUDIO</small><h3>R$ 129,90</h3><p>/ mês</p><ul><li>500 clipes por mês</li><li>Até 6h por vídeo</li><li>Equipe e alto volume</li><li>Recursos avançados</li></ul><button class="ghost btn">Em breve</button></article>
+<article class="price"><small>MASTER</small><h3>R$ 119,97</h3><p>/ mês • fidelidade de 12 meses</p><ul><li>Clipadas ilimitadas</li><li>Vídeos longos</li><li>1080p</li><li>Sem marca d'água</li><li>Prioridade máxima</li></ul><button class="ghost btn">Em breve</button></article>
 </div></section>
 <section class="section shell"><div class="beta"><div><small class="mono green">NORYA / PUBLIC BETA</small><h2>Primeiro validamos a experiência.<br>Depois ligamos o motor completo.</h2></div><button class="btn" data-demo>Testar agora →</button></div></section>
 </main>
-<section class="dashboard shell" id="dashboard"><div class="dashGrid"><aside class="side"><div class="logo"><span class="mark">N</span>NORYA <span class="green">IA</span></div><div class="menu"><button class="active">✦ Gerar clipada</button><button>◫ Histórico</button><button>◇ Meu plano</button></div><div class="user"><b>Renato</b><br><span class="green mono">FREE PLAN</span></div></aside><div class="main"><div class="top"><div><small class="mono green">NORYA DASHBOARD / BETA</small><h2 style="font-size:36px;margin:8px 0">Bom dia.</h2></div><div class="usage"><strong>1</strong><div><b>clipe disponível</b><br><small>hoje</small></div></div></div>
+<section class="dashboard shell" id="dashboard"><div class="dashGrid"><aside class="side"><div class="logo"><span class="mark">N</span>NORYA <span class="green">IA</span></div><div class="menu"><button class="active">✦ Gerar clipada</button><button>◫ Histórico</button><button>◇ Meu plano</button></div><div class="user"><b id="userName">MASTER</b><br><span class="green mono" id="userPlan">MASTER / OWNER</span></div></aside><div class="main"><div class="top"><div><small class="mono green">NORYA DASHBOARD / BETA</small><h2 style="font-size:36px;margin:8px 0">Bom dia.</h2></div><div class="usage"><strong id="usageValue">∞</strong><div><b id="usageLabel">clipadas ilimitadas</b><br><small id="usageSub">MASTER</small></div></div></div>
 <div class="generator"><small class="mono green">NEW CLIP</small><h2>Qual conteúdo vamos clipar?</h2><div class="urlbox"><input id="videoUrl" placeholder="Cole um link de vídeo autorizado"><button class="btn" id="analyze">ANALISAR →</button></div><div class="uploadRow"><button class="ghost btn" id="dashUploadBtn">OU ENVIAR ARQUIVO</button><span class="fileHint">MP4, MOV ou WEBM • até 200 MB</span></div><input id="dashFileInput" type="file" accept="video/*" hidden><div class="inlineError" id="inlineError"></div><p style="color:#626c64;font-size:11px">Beta pública: links diretos de vídeo podem ser processados agora. YouTube/TikTok/Instagram ainda não são importados diretamente.</p><div class="status" id="status"><b id="statusText">Analisando conteúdo...</b><div class="bar"><i id="bar"></i></div></div><div class="result" id="result"><div><small class="mono green">NORYA SCORE</small><div class="score" id="scoreValue">—</div><h2 id="resultTitle">Clipada pronta.</h2><p id="resultText" style="color:#7b857d;line-height:1.6">Seu clipe foi renderizado pela Norya.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn" id="downloadClip" href="#" download="norya-clip.mp4">BAIXAR CLIPADA ↓</a><button class="ghost btn" id="again">Testar outro link</button></div></div><div class="phone"><video id="clipPreview" controls playsinline style="width:100%;height:100%;object-fit:cover;display:none"></video><span id="previewPlaceholder">PRÉVIA<br>9:16</span></div></div></div>
-<div style="margin-top:30px"><small class="mono green">PLANO ATUAL</small><h3>FREE — 1 clipe por dia</h3><p style="color:#69736b">Creator R$ 29,90 • Pro R$ 59,90 • Studio R$ 129,90</p></div>
+<div style="margin-top:30px"><small class="mono green">PLANO ATUAL</small><h3>FREE — 1 clipe por dia</h3><p style="color:#69736b">Creator R$ 29,90 • Pro R$ 59,90 • Master R$ 119,97/mês • fidelidade de 12 meses</p></div>
 </div></div></section>
 <footer><div class="shell">© 2026 Norya IA — Beta pública para testes. Use apenas conteúdo próprio ou autorizado.</div></footer>
 <div class="notice">BETA PÚBLICA • geração real para links diretos de vídeo</div>
 <script>
 const API='https://norya-ia-api-beta.onrender.com';
+const loginScreen=document.getElementById('loginScreen'),appShell=document.getElementById('appShell');
+const loginEmail=document.getElementById('loginEmail'),loginPassword=document.getElementById('loginPassword'),loginBtn=document.getElementById('loginBtn'),loginError=document.getElementById('loginError');
+let authToken=localStorage.getItem('norya_token')||'';
 const landing=document.getElementById('landing'),dash=document.getElementById('dashboard');
 const homeUrl=document.getElementById('homeVideoUrl'),homeAnalyze=document.getElementById('homeAnalyze'),homeMsg=document.getElementById('homeMsg'),homeMsgText=document.getElementById('homeMsgText'),homeUploadRow=document.getElementById('homeUploadRow');
 const homeUploadBtn=document.getElementById('homeUploadBtn'),homeFileInput=document.getElementById('homeFileInput');
 const videoUrl=document.getElementById('videoUrl'),analyze=document.getElementById('analyze'),status=document.getElementById('status'),bar=document.getElementById('bar'),result=document.getElementById('result'),txt=document.getElementById('statusText');
 const dashUploadBtn=document.getElementById('dashUploadBtn'),dashFileInput=document.getElementById('dashFileInput'),inlineError=document.getElementById('inlineError');
 const downloadClip=document.getElementById('downloadClip'),clipPreview=document.getElementById('clipPreview'),previewPlaceholder=document.getElementById('previewPlaceholder'),scoreValue=document.getElementById('scoreValue'),resultText=document.getElementById('resultText');
+
+async function restoreSession(){
+  if(!authToken) return false;
+  try{
+    const res=await fetch(API+'/api/auth/me',{headers:{Authorization:'Bearer '+authToken}});
+    const data=await res.json();
+    if(!res.ok) throw new Error();
+    enterApp(data.user);
+    return true;
+  }catch{
+    localStorage.removeItem('norya_token');authToken='';
+    return false;
+  }
+}
+function enterApp(user){
+  loginScreen.style.display='none';appShell.style.display='block';
+  document.getElementById('userName').textContent=user?.name||'MASTER';
+  document.getElementById('userPlan').textContent=(user?.plan||'MASTER')+' / '+(user?.role||'OWNER');
+  document.getElementById('usageValue').textContent=user?.unlimited?'∞':'1';
+  document.getElementById('usageLabel').textContent=user?.unlimited?'clipadas ilimitadas':'clipe disponível';
+  document.getElementById('usageSub').textContent=user?.plan||'FREE';
+}
+loginBtn.onclick=async()=>{
+  loginError.style.display='none';
+  const email=loginEmail.value.trim(),password=loginPassword.value;
+  if(!email||!password){loginError.textContent='Informe e-mail e senha.';loginError.style.display='block';return}
+  loginBtn.disabled=true;loginBtn.textContent='ENTRANDO...';
+  try{
+    const res=await fetch(API+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok) throw new Error(data.error||'Não foi possível entrar.');
+    authToken=data.token;localStorage.setItem('norya_token',authToken);enterApp(data.user);
+  }catch(e){
+    loginError.textContent=e.message||'Falha no login.';loginError.style.display='block';
+  }finally{
+    loginBtn.disabled=false;loginBtn.textContent='ENTRAR →';
+  }
+};
+loginPassword.addEventListener('keydown',e=>{if(e.key==='Enter')loginBtn.click()});
+restoreSession();
 
 function openDashboard(){
   landing.style.display='none';dash.style.display='block';window.scrollTo({top:0,behavior:'smooth'});
@@ -94,7 +162,7 @@ async function generateClip(v){
   analyze.disabled=true;analyze.textContent='PROCESSANDO...';
   const timer=startProgress('Validando link...');
   try{
-    const res=await fetch(API+'/api/clip',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:v})});
+    const res=await fetch(API+'/api/clip',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+authToken},body:JSON.stringify({url:v})});
     const data=await res.json().catch(()=>({}));
     if(!res.ok) throw new Error(data.error||'Não foi possível gerar a clipada.');
     clearInterval(timer);finishResult(data);
@@ -112,7 +180,7 @@ async function uploadVideo(file){
   analyze.disabled=true;dashUploadBtn.disabled=true;
   try{
     const fd=new FormData();fd.append('video',file);
-    const res=await fetch(API+'/api/upload',{method:'POST',body:fd});
+    const res=await fetch(API+'/api/upload',{method:'POST',headers:{Authorization:'Bearer '+authToken},body:fd});
     const data=await res.json().catch(()=>({}));
     if(!res.ok) throw new Error(data.error||'Não foi possível processar o arquivo.');
     clearInterval(timer);finishResult(data);
@@ -147,4 +215,4 @@ document.getElementById('again').onclick=()=>{
   clipPreview.pause();clipPreview.removeAttribute('src');clipPreview.load();clipPreview.style.display='none';previewPlaceholder.style.display='inline';videoUrl.value='';videoUrl.focus();
 };
 </script>
-</body></html>
+</div></body></html>
