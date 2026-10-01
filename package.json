@@ -3,11 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "type": "commonjs",
-  "engines": {"node": ">=20"},
-  "scripts": {"start": "node server.js"},
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "ffmpeg-static": "^5.2.0"
+    "ffmpeg-static": "^5.2.0",
+    "multer": "^2.0.2"
   }
 }
