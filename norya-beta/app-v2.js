@@ -170,7 +170,16 @@ async function pollJob(id){
       const d=await r.json().catch(()=>({}));
       if(!r.ok)throw new Error(d.error||'Não consegui consultar o processamento.');
       const j=d.job;activeJob=j;
-      setProgress(j.progress,j.status==='done'?'Clipadas prontas':j.status==='error'?'Importação interrompida':j.stage,j.stage);
+      let shownProgress=j.progress;
+      let shownText=j.stage;
+      if(j.status==='processing'&&/importando/i.test(String(j.stage||''))&&Number(j.progress)<=8){
+        const started=new Date(j.createdAt).getTime()||Date.now();
+        const elapsed=Math.max(0,Math.floor((Date.now()-started)/1000));
+        shownProgress=Math.min(28,8+Math.floor(elapsed/15));
+        const mm=Math.floor(elapsed/60),ss=elapsed%60;
+        shownText='Importando vídeo • '+String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0')+' • pode levar alguns minutos';
+      }
+      setProgress(shownProgress,j.status==='done'?'Clipadas prontas':j.status==='error'?'Importação interrompida':j.stage,shownText);
 
       if(j.status==='done'){
         clearInterval(pollTimer);
