@@ -173,14 +173,12 @@ async function apifyJson(url,options={}){
   return data;
 }
 
-async function downloadYoutubeProvider(url,dest){
-  if(!APIFY_TOKEN) throw new Error('Provider de importação não configurado.');
-
+async function runApifyYoutube(url,quality){
   const actor='datapipe~youtube-video-downloader';
   const token=encodeURIComponent(APIFY_TOKEN);
   const input={
     videoUrls:[url],
-    quality:'720p',
+    quality,
     format:'mp4',
     maxConcurrency:1,
     includeSubtitles:false,
@@ -188,7 +186,7 @@ async function downloadYoutubeProvider(url,dest){
     includeStats:false
   };
 
-  console.log('[NORYA_IMPORT] Starting Apify import');
+  console.log('[NORYA_IMPORT] Starting Apify import at',quality);
   const started=await apifyJson(
     'https://api.apify.com/v2/acts/'+actor+'/runs?token='+token+'&memory=1024',
     {
@@ -200,14 +198,13 @@ async function downloadYoutubeProvider(url,dest){
 
   const run=started?.data||started;
   const runId=run?.id;
-  const datasetId=run?.defaultDatasetId;
   if(!runId) throw new Error('Apify não retornou o ID da execução.');
 
   const deadline=Date.now()+1000*60*7;
   let finalRun=run;
-
   while(Date.now()<deadline){
-    if(['SUCCEEDED','FAILED','ABORTED','TIMED-OUT'].includes(String(finalRun?.status||'').toUpperCase())) break;
+    const status=String(finalRun?.status||'').toUpperCase();
+    if(['SUCCEEDED','FAILED','ABORTED','TIMED-OUT'].includes(status)) break;
     await new Promise(r=>setTimeout(r,2500));
     const state=await apifyJson('https://api.apify.com/v2/actor-runs/'+encodeURIComponent(runId)+'?token='+token);
     finalRun=state?.data||state;
@@ -215,29 +212,50 @@ async function downloadYoutubeProvider(url,dest){
   }
 
   const status=String(finalRun?.status||'').toUpperCase();
-  if(status!=='SUCCEEDED'){
-    throw new Error('Apify terminou com status '+(status||'DESCONHECIDO')+'.');
-  }
+  if(status!=='SUCCEEDED') throw new Error('Apify terminou com status '+(status||'DESCONHECIDO')+'.');
 
-  const finalDatasetId=finalRun?.defaultDatasetId||datasetId;
-  if(!finalDatasetId) throw new Error('Apify não retornou o dataset da execução.');
+  const datasetId=finalRun?.defaultDatasetId||run?.defaultDatasetId;
+  if(!datasetId) throw new Error('Apify não retornou o dataset da execução.');
 
   const items=await apifyJson(
-    'https://api.apify.com/v2/datasets/'+encodeURIComponent(finalDatasetId)+'/items?token='+token+'&clean=true'
+    'https://api.apify.com/v2/datasets/'+encodeURIComponent(datasetId)+'/items?token='+token+'&clean=true'
   );
   const item=Array.isArray(items)?items[0]:null;
-
-  if(!item){
-    throw new Error('Apify não retornou resultado para o vídeo.');
-  }
+  if(!item) throw new Error('Apify não retornou resultado para o vídeo.');
   if(String(item.status||'').toLowerCase()!=='success'||!item.downloadUrl){
     throw new Error('Apify: '+(item.error||'download indisponível para este vídeo.'));
   }
+  return item;
+}
 
-  console.log('[NORYA_IMPORT] Download URL received');
-  await downloadDirect(item.downloadUrl,dest);
-  console.log('[NORYA_IMPORT] Video imported successfully');
-  return true;
+async function downloadYoutubeProvider(url,dest){
+  if(!APIFY_TOKEN) throw new Error('Provider de importação não configurado.');
+
+  let lastError=null;
+  for(const quality of ['720p','480p','360p']){
+    try{
+      const item=await runApifyYoutube(url,quality);
+      const size=Number(item.fileSize||0);
+      const sizeMb=Number(item.fileSizeMB||0);
+
+      if((size&&size>MAX_BYTES)||(sizeMb&&sizeMb>MAX_BYTES/1024/1024)){
+        console.warn('[NORYA_IMPORT] Source too large at',quality,'-',sizeMb||Math.round(size/1024/1024),'MB');
+        lastError=new Error('Arquivo muito grande em '+quality+'.');
+        continue;
+      }
+
+      console.log('[NORYA_IMPORT] Download URL received at',quality);
+      await downloadDirect(item.downloadUrl,dest);
+      console.log('[NORYA_IMPORT] Video imported successfully at',quality);
+      return true;
+    }catch(e){
+      lastError=e;
+      console.error('[NORYA_IMPORT] Apify attempt failed at',quality+':',e.message);
+      await fs.rm(dest,{force:true}).catch(()=>{});
+      await new Promise(r=>setTimeout(r,1200));
+    }
+  }
+  throw lastError||new Error('Importação indisponível.');
 }
 
 async function downloadYoutube(url,dest){
@@ -450,4 +468,4 @@ setInterval(()=>{
   }
 },10*60*1000).unref();
 
-app.listen(PORT,'0.0.0.0',()=>console.log('Norya IA 1.0 API on '+PORT));
+app.listen(PORT,'0.0.0.0',()=>console.log('Norya IA 1.0 API on '+PORT+' | Apify '+(APIFY_TOKEN?'ON':'OFF')));
