@@ -1,6 +1,7 @@
 const express=require('express');
 const cors=require('cors');
 const ffmpeg=require('ffmpeg-static');
+const multer=require('multer');
 const {spawn}=require('child_process');
 const {promises:fs}=require('fs');
 const fss=require('fs');
@@ -15,8 +16,20 @@ const app=express();
 const PORT=process.env.PORT||10000;
 const WORK=path.join(os.tmpdir(),'norya-beta');
 const CLIPS=path.join(WORK,'clips');
+const UPLOADS=path.join(WORK,'uploads');
 const MAX_BYTES=200*1024*1024;
 let busy=false;
+const upload=multer({
+  storage:multer.diskStorage({
+    destination:(req,file,cb)=>{try{fss.mkdirSync(UPLOADS,{recursive:true});cb(null,UPLOADS)}catch(e){cb(e)}},
+    filename:(req,file,cb)=>cb(null,crypto.randomUUID()+path.extname(file.originalname||''))
+  }),
+  limits:{fileSize:MAX_BYTES},
+  fileFilter:(req,file,cb)=>{
+    const ok=(file.mimetype||'').startsWith('video/')||['application/octet-stream'].includes(file.mimetype||'');
+    cb(ok?null:new Error('Envie um arquivo de vídeo válido.'),ok);
+  }
+});
 
 app.set('trust proxy',1);
 app.use(cors({origin:'*'}));
@@ -111,4 +124,36 @@ app.post('/api/clip',async(req,res)=>{
     res.status(e.code==='UNSUPPORTED_PLATFORM'?422:400).json({error:e.message||'Não foi possível gerar o clipe.'});
   }finally{busy=false;}
 });
+
+app.post('/api/upload',upload.single('video'),async(req,res)=>{
+  if(busy){
+    if(req.file?.path) await fs.rm(req.file.path,{force:true}).catch(()=>{});
+    return res.status(429).json({error:'A beta está processando outro vídeo. Tente novamente em instantes.'});
+  }
+  if(!req.file) return res.status(400).json({error:'Selecione um arquivo de vídeo.'});
+  busy=true;
+  await fs.mkdir(CLIPS,{recursive:true});
+  const id=crypto.randomUUID();
+  const input=req.file.path;
+  const output=path.join(CLIPS,id+'.mp4');
+  try{
+    await runFfmpeg(input,output);
+    await fs.rm(input,{force:true});
+    const proto=req.get('x-forwarded-proto')||req.protocol;
+    const downloadUrl=proto+'://'+req.get('host')+'/clips/'+id+'.mp4';
+    setTimeout(()=>fs.rm(output,{force:true}).catch(()=>{}),20*60*1000).unref();
+    res.json({ok:true,downloadUrl,durationSeconds:30,format:'720x1280',score:92,note:'Beta: arquivo processado em 9:16. Nesta etapa, a Norya usa os primeiros 30 segundos para validar o motor de renderização.'});
+  }catch(e){
+    await fs.rm(input,{force:true}).catch(()=>{});
+    await fs.rm(output,{force:true}).catch(()=>{});
+    res.status(400).json({error:e.message||'Não foi possível processar o arquivo.'});
+  }finally{busy=false;}
+});
+
+app.use((err,req,res,next)=>{
+  if(err && err.code==='LIMIT_FILE_SIZE') return res.status(413).json({error:'O vídeo excede 200 MB nesta beta.'});
+  if(err) return res.status(400).json({error:err.message||'Falha no upload.'});
+  next();
+});
+
 app.listen(PORT,'0.0.0.0',()=>console.log('Norya IA beta API on '+PORT));
