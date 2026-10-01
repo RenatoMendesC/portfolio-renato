@@ -161,27 +161,83 @@ async function downloadDirect(url,dest){
   const limiter=new Transform({transform(chunk,enc,cb){bytes+=chunk.length;if(bytes>MAX_BYTES)return cb(new Error('O vídeo ultrapassa 300 MB.'));cb(null,chunk)}});
   await pipeline(Readable.fromWeb(res.body),limiter,fss.createWriteStream(dest));
 }
+async function apifyJson(url,options={}){
+  const resp=await fetch(url,options);
+  const textBody=await resp.text();
+  let data={};
+  try{data=textBody?JSON.parse(textBody):{}}catch{data={raw:textBody.slice(0,500)}}
+  if(!resp.ok){
+    const detail=data?.error?.message||data?.message||('HTTP '+resp.status);
+    throw new Error('Apify: '+detail);
+  }
+  return data;
+}
+
 async function downloadYoutubeProvider(url,dest){
   if(!APIFY_TOKEN) throw new Error('Provider de importação não configurado.');
-  const ctrl=new AbortController();
-  const timer=setTimeout(()=>ctrl.abort(),300000);
-  try{
-    const endpoint='https://api.apify.com/v2/acts/datapipe~youtube-video-downloader/run-sync-get-dataset-items?token='+encodeURIComponent(APIFY_TOKEN);
-    const resp=await fetch(endpoint,{
+
+  const actor='datapipe~youtube-video-downloader';
+  const token=encodeURIComponent(APIFY_TOKEN);
+  const input={
+    videoUrls:[url],
+    quality:'720p',
+    format:'mp4',
+    maxConcurrency:1,
+    includeSubtitles:false,
+    includeThumbnail:false,
+    includeStats:false
+  };
+
+  console.log('[NORYA_IMPORT] Starting Apify import');
+  const started=await apifyJson(
+    'https://api.apify.com/v2/acts/'+actor+'/runs?token='+token+'&memory=1024',
+    {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({videoUrls:[url],quality:'720p',format:'mp4',maxConcurrency:1}),
-      signal:ctrl.signal
-    });
-    if(!resp.ok) throw new Error('Provider respondeu HTTP '+resp.status);
-    const items=await resp.json();
-    const item=Array.isArray(items)?items[0]:null;
-    if(!item||String(item.status).toLowerCase()!=='success'||!item.downloadUrl){
-      throw new Error(item?.error||'Provider não retornou mídia.');
+      body:JSON.stringify(input)
     }
-    await downloadDirect(item.downloadUrl,dest);
-    return true;
-  }finally{clearTimeout(timer)}
+  );
+
+  const run=started?.data||started;
+  const runId=run?.id;
+  const datasetId=run?.defaultDatasetId;
+  if(!runId) throw new Error('Apify não retornou o ID da execução.');
+
+  const deadline=Date.now()+1000*60*7;
+  let finalRun=run;
+
+  while(Date.now()<deadline){
+    if(['SUCCEEDED','FAILED','ABORTED','TIMED-OUT'].includes(String(finalRun?.status||'').toUpperCase())) break;
+    await new Promise(r=>setTimeout(r,2500));
+    const state=await apifyJson('https://api.apify.com/v2/actor-runs/'+encodeURIComponent(runId)+'?token='+token);
+    finalRun=state?.data||state;
+    console.log('[NORYA_IMPORT] Apify status:',finalRun?.status||'UNKNOWN');
+  }
+
+  const status=String(finalRun?.status||'').toUpperCase();
+  if(status!=='SUCCEEDED'){
+    throw new Error('Apify terminou com status '+(status||'DESCONHECIDO')+'.');
+  }
+
+  const finalDatasetId=finalRun?.defaultDatasetId||datasetId;
+  if(!finalDatasetId) throw new Error('Apify não retornou o dataset da execução.');
+
+  const items=await apifyJson(
+    'https://api.apify.com/v2/datasets/'+encodeURIComponent(finalDatasetId)+'/items?token='+token+'&clean=true'
+  );
+  const item=Array.isArray(items)?items[0]:null;
+
+  if(!item){
+    throw new Error('Apify não retornou resultado para o vídeo.');
+  }
+  if(String(item.status||'').toLowerCase()!=='success'||!item.downloadUrl){
+    throw new Error('Apify: '+(item.error||'download indisponível para este vídeo.'));
+  }
+
+  console.log('[NORYA_IMPORT] Download URL received');
+  await downloadDirect(item.downloadUrl,dest);
+  console.log('[NORYA_IMPORT] Video imported successfully');
+  return true;
 }
 
 async function downloadYoutube(url,dest){
@@ -209,6 +265,8 @@ async function downloadYoutube(url,dest){
   }catch(e){
     await fs.rm(dest,{force:true}).catch(()=>{});
     const msg=String(e?.stderr||e?.message||e);
+    if(providerError) console.error('[NORYA_IMPORT] Provider failed:',providerError.message);
+    console.error('[NORYA_IMPORT] Direct importer failed:',msg.slice(0,700));
     const err=new Error(/private|members.only|unavailable/i.test(msg)
       ? 'Este vídeo não está disponível para processamento.'
       : 'Não foi possível importar este vídeo automaticamente.');
